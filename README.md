@@ -1,9 +1,9 @@
 KOP - Úkol 5
 ============
 ## TODO pro úkol 5
-- GitHub repo
-- Pochop o co jde v zadání 
-- Pochop zápis instancí 
+- ~~GitHub repo~~
+- ~~Pochop o co jde v zadání~~
+- ~~Pochop zápis instancí~~ 
 - Navrhni stavový prostor a operace 
 - Navrhni pro to třídu stav ideálně fungující s tvojí implementací simulovaného ochlazování 
 - Uprav načítání ze souboru instancí 
@@ -40,7 +40,7 @@ Bash skript který pustí Python se vstupním souborem a zkontroluje pomocí pro
 Rozdělený do pěti sbouborů.
  - main.py (hlavní spouštění)
  - classes.py (definice užitých tříd)
- - 3*implementace řešení
+ - 8*implementace řešení
 
 Jako vstup bere 
 - soubor instancí
