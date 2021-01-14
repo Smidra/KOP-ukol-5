@@ -17,34 +17,10 @@ def main():
     # for i in range(3, 4):
     for i in range(0, file_len(sys.argv[1])):
         start = time.process_time()
-
-        if sys.argv[6] == "brute":
-            instances_file[i].solve_brute()
-        elif sys.argv[6] == "bab":
-            instances_file[i].solve_branch_and_bound()
-        elif sys.argv[6] == "greedy":
-            instances_file[i].solve_greedy()
-        elif sys.argv[6] == "redux":
-            instances_file[i].solve_redux()
-        elif sys.argv[6] == "dynamic":
-            instances_file[i].solve_dynamic()
-        elif sys.argv[6] == "fptas3":
-            instances_file[i].solve_fptas(0.3)
-        elif sys.argv[6] == "sim":
+        if sys.argv[6] == "sim":
             instances_file[i].solve_sim(30, 0.97)
         else:
             print("Pick a valid instance from: brute, bab, greedy, redux, dynamic, fptas3, sim")
-
-        # instances_file[i].solve_brute()
-        # instances_file[i].solve_brute_cut()
-        # instances_file[i].solve_branch_and_bound()
-        # instances_file[i].solve_greedy()
-        # instances_file[i].solve_redux()
-        # instances_file[i].solve_dynamic()
-        # instances_file[i].solve_fptas(0.1)
-        # instances_file[i].solve_fptas(0.3)
-        # instances_file[i].solve_fptas(0.5)
-        # instances_file[i].solve_fptas(0.9)
 
         end = time.process_time()
         # print("Elapsed time is %f" % (float(end-start)))

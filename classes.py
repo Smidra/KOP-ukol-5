@@ -107,3 +107,25 @@ class KnapsackInstance:
 
     # Simulated cooling
     solve_sim = simulated.solve_sim
+
+class Maxterm:
+    # Constructor of maxterm
+    def __init__(self, configuration):
+        self.configuration = []
+
+    # Is the maxterm satisfied?
+    def isSatisfiedWith(self):
+        return False
+
+
+class CNFInstance:
+    # Constructor of CNFInstance
+    def __init__(self):
+        self.id = id
+        self.weight_of_variables
+        self.maxterm_array
+
+        self.best_weight = -1
+        self.best_solution = []
+
+

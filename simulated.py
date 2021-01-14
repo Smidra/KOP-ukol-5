@@ -5,6 +5,18 @@ import math
 ROUNDS_SINCE_CHANGE = 300
 ESCAPE_TEMPERATURE  = 0.01
 
+class CNFState:
+    def __init__(self):
+        self.truth_values_state
+        self.is_satisfied
+        self.weight
+
+        self.suspect_variables_set
+        self.of_instance
+
+    # def refresh
+
+
 class KnapsackState:
     def __init__(self, instance):
         self.boxes = instance.current_things
