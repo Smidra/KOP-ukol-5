@@ -12,6 +12,7 @@ import os  # For getting files in the directory
 def main():
     # Load instances from file to objects
     instances_array = load_instances_file(sys.argv[1])
+    print(instances_array[0])
     exit(1)
 
     # Solve every instance
@@ -37,6 +38,12 @@ def main():
     return
 
 
+# Sorting array of pairs is a bit complicated in python
+# https://www.pythoncentral.io/how-to-sort-a-list-tuple-or-object-with-sorted-in-python/
+def getKey(item):
+    return int(item[1])
+
+
 # Load instances from file to objects in array
 def load_instances_file(directory_location):
     instances_array = []
@@ -50,7 +57,7 @@ def load_instances_file(directory_location):
             1]  # Splitting filename to get number of variables
         file_id = str(file.split('.', 1)[0].split('-')[1])  # Splitting filename to get instance ID
         problems.append((file_variables, file_id))
-    problems.sort()
+    problems.sort(key=getKey)  # Soring array of pairs by the second parameter
     # print(problems)
 
     # Load every problem into a CNF Instance
