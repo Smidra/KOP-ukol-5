@@ -1,7 +1,7 @@
 import sys  # work with arguments
 from classes import *  # Custom made classes file
 import time
-import os   # For getting files in the directory
+import os  # For getting files in the directory
 
 
 # python main.py ${KDE_JE_ZADANI} ${KAM_ULOZIT_VYSLEDKY}     ${KDE_JE_KONTROLNI_VYSLEDEK}
@@ -41,26 +41,15 @@ def main():
 def load_instances_file(directory_location):
     instances_array = []
 
-    # m = Maxterm(10)
-    # m.set(-1)
-    # m.set(2)
-    # m.set(-5)
-    # print(m)
-    #
-    # i = CNFInstance(1, 10)
-    # i.addMaxterm(m)
-    # i.setWeight(10,100)
-    # print(i)
-    # exit(1)
-
     # Get all the available problems in specified folder
     # For every file in the folder get filename and parse out the ID
     files_in_dir = os.listdir(directory_location)
-    problems = [] # Save parsed IDs here
+    problems = []  # Save parsed IDs here
     for file in files_in_dir:
-        file_variables = file.split('.',1)[0].split('-')[0].split('f')[1] # Splitting filename to get number of variables
-        file_id = str(file.split('.',1)[0].split('-')[1]) # Splitting filename to get instance ID
-        problems.append( (file_variables,file_id) )
+        file_variables = file.split('.', 1)[0].split('-')[0].split('f')[
+            1]  # Splitting filename to get number of variables
+        file_id = str(file.split('.', 1)[0].split('-')[1])  # Splitting filename to get instance ID
+        problems.append((file_variables, file_id))
     problems.sort()
     # print(problems)
 
@@ -75,12 +64,12 @@ def load_instances_file(directory_location):
         f = open(file_location, "r")
         line_nr = 0
         for line in f:
-            line_nr +=1
+            line_nr += 1
             line = line.split()
 
             # Parse number of maxterms
             if line_nr == 8:
-                new_instance.expecting_maxterms = int(line[3]) -1
+                new_instance.expecting_maxterms = int(line[3]) - 1
                 continue
             # Parse weights
             if line_nr == 10:
@@ -90,7 +79,7 @@ def load_instances_file(directory_location):
                     if weight == '0' or weight == 'w':
                         continue
                     j += 1
-                    new_instance.setWeight(j,int(weight))
+                    new_instance.setWeight(j, int(weight))
                 continue
             # Parse maxterms one by one
             elif line_nr >= 12:
@@ -107,33 +96,15 @@ def load_instances_file(directory_location):
                 continue
 
         # Check if all Maxterms loaded succesfully into instance and if all weights loaded succecfully.
-        if (new_instance.number_of_maxterms != new_instance.expecting_maxterms) or (new_instance.number_of_weights_set != new_instance.number_of_variables):
+        if (new_instance.number_of_maxterms != new_instance.expecting_maxterms) or (
+                new_instance.number_of_weights_set != new_instance.number_of_variables):
             # Do not add instance into instance array.
             print("Did not get the expected number of maxterms when loading instance number %d." % (problem_id))
         else:
-            print(new_instance)
+            # print(new_instance)
+            print("Loaded instance: %d" % (problem_id))
             # Append new instance to instances_array.
             instances_array.append(new_instance)
-
-    exit(1)
-    # # Open file with instances
-    # f = open(directory_location, "r")
-    #
-    # # Iterate, create KnapsackInstance from each line and add them to instances_array
-    # for line in f:
-    #     line = line.split()
-    #     # Create new KnapsackInstance
-    #     new_inst = KnapsackInstance(id=1 * int(line[0]),
-    #                                 expecting_things=int(line[1]),
-    #                                 limit_weight=int(line[2]),
-    #                                 min_cost=int(-1))
-    #     # Iterate the rest of the line to create and load Things
-    #     for i in range(1, int(line[1]) + 1):
-    #         new_thing = Thing(int(line[(i * 2) + 1]), int(line[(i * 2) + 2]))
-    #         new_inst.add_thing(new_thing)
-    #
-    #     # Add the constructed KnapsackInstance to an array representing the file
-    #     instances_array.append(new_inst)
 
     return instances_array
 
