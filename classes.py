@@ -1,10 +1,3 @@
-import brute_force
-import brute_force_cut
-import branch_and_bound
-import greedy  # Greedy algorithm
-import redux  # Redux algorithm
-import dynamic  # Dynamic programming solution
-import FPTAS  # FPTAS alrgorithm
 import simulated
 
 
@@ -81,29 +74,29 @@ class KnapsackInstance:
             print(word)
         return
 
-    # Brute force without cutting
-    solve_brute = brute_force.solve_brute
-    brute = brute_force.brute
-
-    # Solve the instance brute force with cutting
-    solve_brute_cut = brute_force_cut.solve_brute_cut
-    brute_cut = brute_force_cut.brute_cut
-
-    # Solve the instance with branch and bound cutting (weight+cost)
-    solve_branch_and_bound = branch_and_bound.solve_branch_and_bound
-    branch_and_bound = branch_and_bound.branch_and_bound
-
-    # Greedy
-    solve_greedy = greedy.solve_greedy
-
-    # Redux
-    solve_redux = redux.solve_redux
-
-    # Dynamic
-    solve_dynamic = dynamic.dynamic
-
-    # Redux
-    solve_fptas = FPTAS.fptas
+    # # Brute force without cutting
+    # solve_brute = brute_force.solve_brute
+    # brute = brute_force.brute
+    #
+    # # Solve the instance brute force with cutting
+    # solve_brute_cut = brute_force_cut.solve_brute_cut
+    # brute_cut = brute_force_cut.brute_cut
+    #
+    # # Solve the instance with branch and bound cutting (weight+cost)
+    # solve_branch_and_bound = branch_and_bound.solve_branch_and_bound
+    # branch_and_bound = branch_and_bound.branch_and_bound
+    #
+    # # Greedy
+    # solve_greedy = greedy.solve_greedy
+    #
+    # # Redux
+    # solve_redux = redux.solve_redux
+    #
+    # # Dynamic
+    # solve_dynamic = dynamic.dynamic
+    #
+    # # Redux
+    # solve_fptas = FPTAS.fptas
 
     # Simulated cooling
     solve_sim = simulated.solve_sim
