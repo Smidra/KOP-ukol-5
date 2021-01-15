@@ -5,14 +5,14 @@ import os  # For getting files in the directory
 
 
 # python main.py ${KDE_JE_ZADANI} ${KAM_ULOZIT_VYSLEDKY}     ${KDE_JE_KONTROLNI_VYSLEDEK}
-# python main.py ${1}             ${2}                       ${4}
+# python main.py ${1}             ${2}                       ${3}
 #                SLOŽKA           SLOŽKA                     SOUBOR
 
 # Read arguments, control program flow
 def main():
     # Load instances from file to objects
     instances_array = load_instances_file(sys.argv[1])
-    print(instances_array[0])
+    load_solution_file(sys.argv[3], instances_array)
     exit(1)
 
     # Solve every instance
@@ -67,6 +67,7 @@ def load_instances_file(directory_location):
         problem_id = int(problem[1])
         new_instance = CNFInstance(problem_id, number_of_variables)
         # From file read number of maxterms, weights, and maxterms themselves
+        # ... and construct the new instance to be as read from file
         file_location = directory_location + "/wuf%s-%s.mwcnf" % (number_of_variables, problem[1])
         f = open(file_location, "r")
         line_nr = 0
@@ -114,6 +115,42 @@ def load_instances_file(directory_location):
             instances_array.append(new_instance)
 
     return instances_array
+
+
+# Load solutions from file to instances
+def load_solution_file(solution_file_location, instances_array):
+    # Open file
+    f = open(solution_file_location, "r")
+    # For each line, parse the needed info
+    for line in f:
+        line = line.split()
+        # Load solution ID and find the corresponding instance
+        instance_id = int(line[0].split('-')[1])
+        for instance in instances_array:
+            if instance.id == instance_id:
+                this_id_instance = instance
+
+        # Load given exact best solution, and given best weight into the instace
+        this_id_instance.given_best_weight = int(line[1])
+
+        j = 1
+        while True:
+            j += 1
+            variable = int(line[j])
+            if variable == 0:
+                break
+            # Add each variable of solution to new instance
+            if variable > 0:
+                this_id_instance.given_best_solution.append(1)
+            elif variable < 0:
+                this_id_instance.given_best_solution.append(-1)
+            else:
+                print("Very bad. It looks like variable in solution is 0.")
+
+        # print("Loaded solution for Instance nr %d:" % (this_id_instance.id))
+        # print(this_id_instance.given_best_solution)
+
+    return
 
 
 # Count lines in a file

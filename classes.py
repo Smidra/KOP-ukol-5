@@ -113,12 +113,12 @@ class Maxterm:
     # Constructor of maxterm
     def __init__(self, number_of_variables):
         self.number_of_variables = number_of_variables
-        self.configuration = [0] * (number_of_variables+1)  # configuration[0] is a dummy for a cleaner code
+        self.configuration = [0] * (number_of_variables + 1)  # configuration[0] is a dummy for a cleaner code
         self.configuration[0] = -420
 
     # Get variable set in format -3 (non C)
     def set(self, variable):
-        if abs(variable) > (self.number_of_variables+1):
+        if abs(variable) > (self.number_of_variables + 1):
             print("Cound not set a variable not present for this instance!")
             return False
 
@@ -132,7 +132,7 @@ class Maxterm:
             print("Found zero. This shoud be the end of line.")
             return False
 
-        #print(self.configuration)
+        # print(self.configuration)
 
         return True
 
@@ -140,7 +140,7 @@ class Maxterm:
     def __repr__(self):
         complete_string = "("
         first = True
-        for i in range(0,self.number_of_variables+1):
+        for i in range(0, self.number_of_variables + 1):
             if self.configuration[i] == 1:
                 if first:
                     complete_string += "%d" % (i)
@@ -171,12 +171,15 @@ class CNFInstance:
         self.number_of_maxterms = 0
         self.number_of_weights_set = 0
 
-        self.weight_of_variables = [-1] * (number_of_variables+1) # weight_of_variables[0] is a dummy for cleaner code
+        self.weight_of_variables = [-1] * (
+                    number_of_variables + 1)  # weight_of_variables[0] is a dummy for cleaner code
         self.weight_of_variables[0] = -420
         self.maxterm_array = []
 
         self.best_weight = -1
-        self.best_solution = []
+        self.best_solution = [-420]  # Dummy on the [0] for consistence
+        self.given_best_weight = -1
+        self.given_best_solution = [-420]  # Dummy on the [0] for consistence
 
     def addMaxterm(self, maxterm):
         if maxterm.number_of_variables != self.number_of_variables:
@@ -198,7 +201,9 @@ class CNFInstance:
                "Weights       = %s\n" \
                "Maxterm array = %s\n" \
                "Best weight   = %d\n" \
-               "Best solution = %s" % (self.id, self.number_of_variables,self.weight_of_variables, self.maxterm_array, self.best_weight, self.best_solution)
+               "Best solution = %s" % (
+               self.id, self.number_of_variables, self.weight_of_variables, self.maxterm_array, self.best_weight,
+               self.best_solution)
 
     # Simulated annealing
     solve_sim = simulated.solve_sim
