@@ -34,7 +34,6 @@ def main():
     # Save the calculated complexity
     save_complexity_file(sys.argv[2], instances_array)
 
-    better_output(sys.argv[4], instances_array, sys.argv[5])
     return
 
 
@@ -216,65 +215,6 @@ def save_complexity_file(file_location, instances_array):
     print("Time  avg max:\t%f\t%f" % (avg_time, max_time))
     print("Error avg max:\t%d\t\t%d" % (avg_error, max_error))
     f.close()
-
-
-# Count lines in a file
-# Source: https://stackoverflow.com/questions/845058/how-to-get-line-count-of-a-large-file-cheaply-in-python
-def file_len(fname):
-    with open(fname) as f:
-        for i, l in enumerate(f):
-            pass
-    return i + 1
-
-
-# Better output
-def better_output(solution_location, instances_array, save_summary):
-    # Open file with instances
-    try:
-        f = open(solution_location, "r")
-    except:
-        print("======================")
-        print("This is python. Sorry but %s does not exist." % (solution_location))
-        return
-
-    item_nr = 0
-    max_complexity = 0
-    avg_complexity = 0
-    max_error = 0
-    avg_error = 0
-
-    for line in f:
-        line = line.split()
-        if instances_array[item_nr].id != int(line[0]):
-            # print("Item nr> %d != %d <Currently reading" % (item_nr+1, int(line[0])))
-            continue
-        correct_solution = line[2]
-        calculated_solution = instances_array[item_nr].best_cost
-        if int(correct_solution) != 0:
-            absolute_calculation_error = abs(calculated_solution - int(correct_solution))
-            one_percent = float(float(correct_solution) / 100)
-            # print("One percent from %d is %f" % ( int(correct_solution), one_percent ) )
-            calculation_error = float(absolute_calculation_error / one_percent)
-        calculation_complexity = instances_array[item_nr].complexity
-        max_error = max(max_error, calculation_error)
-        max_complexity = max(max_complexity, calculation_complexity)
-        avg_complexity += calculation_complexity
-        avg_error += calculation_error
-        item_nr += 1
-
-    avg_error = float(avg_error) / float(len(instances_array))
-    avg_complexity = float(avg_complexity) / float(len(instances_array))
-
-    print("%f; %f; %f; %f --> complexity max, complexity avg, max error, avg error." % (
-        max_complexity, avg_complexity, max_error, avg_error))
-
-    f = open(save_summary, "a")
-    f.write("%d; %f; %f; %f; %f\n" % (
-        instances_array[0].current_things, max_complexity, avg_complexity, max_error, avg_error))
-    f.close()
-
-    return
-
 
 if __name__ == '__main__':
     main()
