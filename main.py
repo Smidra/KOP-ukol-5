@@ -13,21 +13,17 @@ def main():
     # Load instances from file to objects
     instances_array = load_instances_file(sys.argv[1])
     load_solution_file(sys.argv[3], instances_array)
-    save_complexity_file(sys.argv[2], instances_array)
-    exit(1)
 
     # Solve every instance
-    for i in range(0, file_len(sys.argv[1])):
+    for i in range(0, len(instances_array)):
         start = time.process_time()
-        if sys.argv[6] == "sim":
-            instances_array[i].solve_sim(30, 0.97)
-        else:
-            print("Pick a valid instance from: brute, bab, greedy, redux, dynamic, fptas3, sim")
-
+        instances_array[i].solve_sim(30, 0.97)
         end = time.process_time()
+
         # print("Elapsed time is %f" % (float(end-start)))
         instances_array[i].time = float(end - start)
         print(instances_array[i])
+        exit(1)
 
     # Save the constructed solutions for diff comparison
     save_solution_file(sys.argv[2], instances_array)
