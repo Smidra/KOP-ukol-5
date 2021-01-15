@@ -13,10 +13,10 @@ def main():
     # Load instances from file to objects
     instances_array = load_instances_file(sys.argv[1])
     load_solution_file(sys.argv[3], instances_array)
+    save_complexity_file(sys.argv[2], instances_array)
     exit(1)
 
     # Solve every instance
-    # for i in range(3, 4):
     for i in range(0, file_len(sys.argv[1])):
         start = time.process_time()
         if sys.argv[6] == "sim":
@@ -29,10 +29,10 @@ def main():
         instances_array[i].time = float(end - start)
         print(instances_array[i])
 
-    # Save the constructed solution for diff comparison
+    # Save the constructed solutions for diff comparison
     save_solution_file(sys.argv[2], instances_array)
     # Save the calculated complexity
-    save_complexity_file(sys.argv[3], instances_array)
+    save_complexity_file(sys.argv[2], instances_array)
 
     better_output(sys.argv[4], instances_array, sys.argv[5])
     return
@@ -153,6 +153,71 @@ def load_solution_file(solution_file_location, instances_array):
     return
 
 
+# Save CONSTRUCTED solved solution of instances to a file
+# The solution file is formatted the same as MOODLE solutions
+# Diff can than easily spot differences
+def save_solution_file(file_location, instances_array):
+    f = open(file_location + "/solution_%d.dat" % (instances_array[0].number_of_variables), "w")
+    for instance in instances_array:
+        # uf20-01000 5738 -1 2 3 4 5 6 7 8 9 10 -11 12 13 14 -15 -16 -17 18 19 -20 0
+        f.write("uf%d-0%d %d" % (instance.number_of_variables, instance.id, instance.best_weight))
+        j = -1
+        for config in instance.best_solution:
+            j += 1
+            if config == -420:
+                continue
+            elif config == 1:
+                f.write(" %d" % j)
+            elif config == 0:
+                f.write(" %d" % (-1 * j))
+            else:
+                print("Configuration in calculated solution is unexpected!")
+                print(config)
+
+        f.write(" 0 \n")
+
+    f.close()
+    return
+
+
+# Save all info about complexity of calculated instances to a file
+def save_complexity_file(file_location, instances_array):
+    f = open(file_location + "/complexity_%d.dat" % (instances_array[0].number_of_variables), "w")
+    time_sum = 0
+    max_time = -1
+    error_sum = 0
+    max_error = -1
+    instances_sum = 0
+    for instance in instances_array:
+        # Find max and avg time
+        if instance.time > max_time:
+            max_time = instance.time
+        time_sum += instance.time
+        # Find max and avg error
+        current_error = abs(instance.best_weight - instance.given_best_weight)
+        if current_error > max_error:
+            max_error = current_error
+        error_sum += current_error
+        # Print the complexity file
+        f.write("%d\t%d\t%d\t%d\t%f\n" % (instance.id,
+                                      instance.best_weight,
+                                      instance.given_best_weight,
+                                      current_error,
+                                      instance.time))
+        instances_sum += 1
+
+    avg_time = float(time_sum) / instances_sum
+    avg_error = error_sum / instances_sum
+    f.write("================ Summary ================\n"
+            "Time  avg max:\t%f\t%f\n"
+            "Error avg max:\t%d\t\t%d\n" % (avg_time, max_time, avg_error, max_error))
+
+    print("================ Summary ================")
+    print("Time  avg max:\t%f\t%f" % (avg_time, max_time))
+    print("Error avg max:\t%d\t\t%d" % (avg_error, max_error))
+    f.close()
+
+
 # Count lines in a file
 # Source: https://stackoverflow.com/questions/845058/how-to-get-line-count-of-a-large-file-cheaply-in-python
 def file_len(fname):
@@ -209,46 +274,6 @@ def better_output(solution_location, instances_array, save_summary):
     f.close()
 
     return
-
-
-# Save CONSTRUCTED solved instances to a file
-# The solution file is formatted the same as MOODLE solutions
-# Diff can than easily spot differences
-def save_solution_file(file_location, instances_array):
-    f = open(file_location, "w")
-    for instance in instances_array:
-        f.write("%d %d %d" % (instance.id, instance.current_things, instance.best_cost))
-        for config in instance.best_solution:
-            f.write(" %d" % config)
-
-        f.write(" \n")
-
-    f.close()
-    return
-
-
-# Save all info about complexity of calculated instances to a file
-def save_complexity_file(file_location, instances_array):
-    f = open(file_location, "w")
-    # time_sum = 0
-    # complexity_sum = 0
-    # brut_sum = 0
-    for instance in instances_array:
-        f.write("%d %d %d %d %d %f\n" % (instance.id,
-                                         instance.best_cost,
-                                         instance.best_acceptable_cost,
-                                         instance.complexity,
-                                         instance.complexity_brute,
-                                         instance.time))
-        # complexity_sum = complexity_sum + instance.complexity
-        # brut_sum = brut_sum + instance.complexity_brute
-        # time_sum = time_sum + instance.time
-
-    # print("====== Summary ======")
-    # print("Avg time:  %d" % (float(time_sum) / len(instances_array)))
-    # print("Avg complexity:  %d" % (int(complexity_sum) / len(instances_array)))
-    # print("Avg brute:  %d" % (int(brut_sum) / len(instances_array)))
-    f.close()
 
 
 if __name__ == '__main__':

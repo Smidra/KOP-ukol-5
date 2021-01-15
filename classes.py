@@ -178,6 +178,8 @@ class CNFInstance:
 
         self.best_weight = -1
         self.best_solution = [-420]  # Dummy on the [0] for consistence
+        self.solved = False
+        self.time = 0
         self.given_best_weight = -1
         self.given_best_solution = [-420]  # Dummy on the [0] for consistence
 
