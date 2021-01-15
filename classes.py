@@ -102,6 +102,11 @@ class KnapsackInstance:
     solve_sim = simulated.solve_sim
 
 
+# Class to represent a maxterm.
+# Maxterm holds configuration about everz variable. It can be in three distinct states
+#  0 - variable not present in maxterm
+#  1 - variable present
+# -1 - variable present and negated
 class Maxterm:
     # Constructor of maxterm
     def __init__(self, number_of_variables):
@@ -151,8 +156,21 @@ class Maxterm:
         return complete_string
 
     # Is the maxterm satisfied?
-    def isSatisfiedWith(self):
-        return False
+    def isSatisfiedWith(self, configuration):
+        result = False
+        for variable in self.configuration:
+            if (variable == -420) or (variable == 0):
+                continue
+            elif variable == 1:
+                result = configuration or result
+            elif variable == -1:
+                result = (not configuration) or result
+
+        return result
+
+    # Return Maxterm variables
+    def getVars(self):
+        return self.configuration
 
 
 class CNFInstance:
@@ -165,7 +183,7 @@ class CNFInstance:
         self.number_of_weights_set = 0
 
         self.weight_of_variables = [-1] * (
-                    number_of_variables + 1)  # weight_of_variables[0] is a dummy for cleaner code
+                number_of_variables + 1)  # weight_of_variables[0] is a dummy for cleaner code
         self.weight_of_variables[0] = -420
         self.maxterm_array = []
 
@@ -197,8 +215,8 @@ class CNFInstance:
                "Maxterm array = %s\n" \
                "Best weight   = %d\n" \
                "Best solution = %s" % (
-               self.id, self.number_of_variables, self.weight_of_variables, self.maxterm_array, self.best_weight,
-               self.best_solution)
+                   self.id, self.number_of_variables, self.weight_of_variables, self.maxterm_array, self.best_weight,
+                   self.best_solution)
 
     # Simulated annealing
     solve_sim = simulated.solve_sim

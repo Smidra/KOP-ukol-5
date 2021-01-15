@@ -6,16 +6,58 @@ ROUNDS_SINCE_CHANGE = 300
 ESCAPE_TEMPERATURE  = 0.01
 
 class CNFState:
-    def __init__(self):
-        self.truth_values_state
-        self.is_satisfied
-        self.weight
+    def __init__(self, instance):
+        self.of_instance = instance
+        self.truth_values_state = [0] * (instance.number_of_variables+1)
+        self.truth_values_state[0] = -420
+        self.weight = -1
 
-        self.suspect_variables_set
-        self.of_instance
+        self.is_satisfied = False
+        self.suspect_variables_set = {}
 
-    # def refresh
+        # Refresh instance
+        self.refresh()
 
+    # Returns True if this CNF configuration state has all maxterms satisfied
+    # Sets the "is_satisfied" attribute
+    # Creates up-to date suspect variables set
+    def is_solution(self):
+        self.is_satisfied = True
+        # For every maxterm find out if it is satisfied
+        for maxterm in self.of_instance.maxterm_array:
+            if not maxterm.isSatisfiedWith(self.truth_values_state):
+                # If not get its variables and add them to "suspect_variables_set" ans set "is_satisfied" to False
+                self.suspect_variables_set += maxterm.getVars()
+                self.is_satisfied = False
+
+        return self.is_satisfied
+
+    # Sets the "is_satisfied" and "suspect_variables_set" attributes with is_solution method
+    # Calculates the current weight to "weight" attribute
+    def refresh(self):
+        return False
+
+    # Change one bit in state and refresh values
+    def flip(self, item_nr):
+        return False
+
+    # Randomizes the state completely
+    def randomize(self):
+        return False
+
+    # Try to find solution with randomize - if not, go with random
+    def random_start(self):
+        return False
+
+    # Compare two states and decide, which one is better
+    def is_better(self, challenger):
+        return False
+
+    def random_neighbour(self):
+        return False
+
+    def __str__(self):
+        return "---"
 
 class KnapsackState:
     def __init__(self, instance):
@@ -170,12 +212,12 @@ def try_state(state, temperature):
     return state, False
 
 
-def solve_sim(self, start_temperature, cooling_coeficient):
+def solve_sim(self, start_temperature, cooling_coefficient):
     print("-- Simulated Cooling --")
 
-    state = KnapsackState(self)
+    state = CNFState(self)
     state.random_solution()
-    best = KnapsackState(self)  # Empty state is the default state of KnapsackState
+    best = CNFState(self)  # Empty state is the default state of CNFState
     temperature = start_temperature
     rounds_without_better_state = 0
     rounds_since_new_state = 0
@@ -203,7 +245,7 @@ def solve_sim(self, start_temperature, cooling_coeficient):
             # print("%d" % (state.value))
             # print("%d" % (best.value))
 
-        temperature = cool(temperature, cooling_coeficient)
+        temperature = cool(temperature, cooling_coefficient)
         # print("Rounds without new better: %d" % (rounds_without_better_state))
 
     print("--- Finished ---")
