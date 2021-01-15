@@ -108,10 +108,50 @@ class KnapsackInstance:
     # Simulated cooling
     solve_sim = simulated.solve_sim
 
+
 class Maxterm:
     # Constructor of maxterm
-    def __init__(self, configuration):
-        self.configuration = []
+    def __init__(self, number_of_variables):
+        self.number_of_variables = number_of_variables
+        self.configuration = [0] * (number_of_variables+1)  # configuration[0] is a dummy for a cleaner code
+        self.configuration[0] = -420
+
+    # Get variable set in format -3 (non C)
+    def set(self, variable):
+        if variable >= 1:
+            # Set to 1 -- Variable is present
+            self.configuration[variable] = 1
+        elif variable <= -1:
+            # Set to -1 -- Variable is present AND NEGATED
+            self.configuration[abs(variable)] = -1
+        else:
+            print("Found zero. This shoud be the end of line.")
+            return False
+
+        print(self.configuration)
+
+        return True
+
+    # For listing things inside instance
+    def __repr__(self):
+        complete_string = "("
+        first = True
+        for i in range(0,self.number_of_variables+1):
+            if self.configuration[i] == 1:
+                if first:
+                    complete_string += "%d" % (i)
+                    first = False
+                    continue
+                complete_string += " ∨ %d" % (i)
+            elif self.configuration[i] == -1:
+                if first:
+                    complete_string += "¬%d" % (i)
+                    first = False
+                    continue
+                complete_string += " ∨ ¬%d" % (i)
+
+        complete_string += ")"
+        return complete_string
 
     # Is the maxterm satisfied?
     def isSatisfiedWith(self):
@@ -127,5 +167,3 @@ class CNFInstance:
 
         self.best_weight = -1
         self.best_solution = []
-
-
