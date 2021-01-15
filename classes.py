@@ -118,6 +118,10 @@ class Maxterm:
 
     # Get variable set in format -3 (non C)
     def set(self, variable):
+        if abs(variable) > (self.number_of_variables+1):
+            print("Cound not set a variable not present for this instance!")
+            return False
+
         if variable >= 1:
             # Set to 1 -- Variable is present
             self.configuration[variable] = 1
@@ -128,7 +132,7 @@ class Maxterm:
             print("Found zero. This shoud be the end of line.")
             return False
 
-        print(self.configuration)
+        #print(self.configuration)
 
         return True
 
@@ -160,10 +164,41 @@ class Maxterm:
 
 class CNFInstance:
     # Constructor of CNFInstance
-    def __init__(self):
+    def __init__(self, id, number_of_variables):
         self.id = id
-        self.weight_of_variables
-        self.maxterm_array
+        self.number_of_variables = number_of_variables
+        self.expecting_maxterms = -1
+        self.number_of_maxterms = 0
+        self.number_of_weights_set = 0
+
+        self.weight_of_variables = [-1] * (number_of_variables+1) # weight_of_variables[0] is a dummy for cleaner code
+        self.weight_of_variables[0] = -420
+        self.maxterm_array = []
 
         self.best_weight = -1
         self.best_solution = []
+
+    def addMaxterm(self, maxterm):
+        if maxterm.number_of_variables != self.number_of_variables:
+            print("Could not maxterm with different number of variables!")
+            return False
+        self.maxterm_array.append(maxterm)
+        self.number_of_maxterms += 1
+        return True
+
+    def setWeight(self, variable, weight):
+        self.weight_of_variables[variable] = weight
+        self.number_of_weights_set += 1
+        return
+
+    # For printing the instance
+    def __str__(self):
+        return "=== CNF Instance nr.%d ===\n" \
+               "Variables     = %d\n" \
+               "Weights       = %s\n" \
+               "Maxterm array = %s\n" \
+               "Best weight   = %d\n" \
+               "Best solution = %s" % (self.id, self.number_of_variables,self.weight_of_variables, self.maxterm_array, self.best_weight, self.best_solution)
+
+    # Simulated annealing
+    solve_sim = simulated.solve_sim
