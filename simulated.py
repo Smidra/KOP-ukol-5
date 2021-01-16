@@ -8,12 +8,12 @@ ESCAPE_TEMPERATURE  = 0.01
 class CNFState:
     def __init__(self, instance):
         self.of_instance = instance
-        self.truth_values_state = [0] * (instance.number_of_variables+1)
-        self.truth_values_state[0] = -420
+        self.truth_values_array = [0] * (instance.number_of_variables + 1)
+        self.truth_values_array[0] = -420
         self.weight = -1
 
         self.is_satisfied = False
-        self.suspect_variables_set = {}
+        self.suspect_variables_set = set()
 
         # Refresh instance
         self.refresh()
@@ -25,9 +25,9 @@ class CNFState:
         self.is_satisfied = True
         # For every maxterm find out if it is satisfied
         for maxterm in self.of_instance.maxterm_array:
-            if not maxterm.isSatisfiedWith(self.truth_values_state):
+            if not maxterm.isSatisfiedWith(self.truth_values_array):
                 # If not get its variables and add them to "suspect_variables_set" ans set "is_satisfied" to False
-                self.suspect_variables_set += maxterm.getVars()
+                self.suspect_variables_set = self.suspect_variables_set.union(maxterm.getVars())
                 self.is_satisfied = False
 
         return self.is_satisfied

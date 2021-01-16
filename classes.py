@@ -165,10 +165,10 @@ class Maxterm:
             if (variable == -420) or (variable == 0):
                 continue
             elif variable == 1:
-                print("%r or %r" % (configuration[j], result))
+                # print("%r or %r" % (configuration[j], result))
                 result = configuration[j] or result
             elif variable == -1:
-                print("%r or %r" % (not configuration[j], result))
+                # print("%r or %r" % (not configuration[j], result))
                 result = (not configuration[j]) or result
 
         return result

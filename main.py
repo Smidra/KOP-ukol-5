@@ -3,6 +3,7 @@ from classes import *  # Custom made classes file
 import time
 import os  # For getting files in the directory
 
+import simulated
 
 # python main.py ${KDE_JE_ZADANI} ${KAM_ULOZIT_VYSLEDKY}     ${KDE_JE_KONTROLNI_VYSLEDEK}
 # python main.py ${1}             ${2}                       ${3}
@@ -11,28 +12,36 @@ import os  # For getting files in the directory
 # Read arguments, control program flow
 def main():
     # Load instances from file to objects
-    instances_array = load_instances_file(sys.argv[1])
-    load_solution_file(sys.argv[3], instances_array)
+    # instances_array = load_instances_file(sys.argv[1])
+    # load_solution_file(sys.argv[3], instances_array)
 
-    configuration = [-420, 1, 0, 1]
+    inst = CNFInstance(1, 3)
+    inst.setWeight(1, 10)
+    inst.setWeight(2, 20)
+    inst.setWeight(3, 30)
+    m1 = Maxterm(3)
+    m1.set(-1)
+    m1.set(2)
+    inst.addMaxterm(m1)
+    m2 = Maxterm(3)
+    m2.set(-2)
+    m2.set(-3)
+    inst.addMaxterm(m2)
+    m3 = Maxterm(3)
+    m3.set(-3)
+    inst.addMaxterm(m3)
+    print(inst)
+    state = simulated.CNFState(inst)
+    state.truth_values_array[1] = 1
+    state.truth_values_array[2] = 1
+    state.truth_values_array[3] = 1
+    print(state.is_solution())
+    print(state.suspect_variables_set)
 
-    m = Maxterm(3)
-    m.set(-1)
-    m.set(2)
-    m.set(-3)
-    print(m.isSatisfiedWith(configuration))
 
-    n = Maxterm(3)
-    n.set(3)
-    print(m.isSatisfiedWith(configuration))
 
-    suspicious_var = set()
-    print(suspicious_var)
-    suspicious_var = suspicious_var.union(m.getVars())
-    print(suspicious_var)
-    suspicious_var = suspicious_var.union(n.getVars())
-    suspicious_var = suspicious_var.union(n.getVars())
-    print(suspicious_var)
+
+    # suspicious_var = suspicious_var.union(n.getVars())
 
     exit(1)
 
