@@ -16,5 +16,5 @@ mkdir -p "./calculated_${ALG}"
 # Start python script
 python main.py ${KDE_JE_ZADANI} ${KAM_ULOZIT_VYSLEDKY} ${KDE_JE_KONTROLNI_VYSLEDEK}
 
-echo "========================================="
+echo "==========================================="
 echo "Solved with ${ALG}."

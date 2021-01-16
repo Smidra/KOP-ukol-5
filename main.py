@@ -251,11 +251,11 @@ def save_complexity_file(file_location, instances_array):
 
     avg_time = float(time_sum) / instances_sum
     avg_error = error_sum / instances_sum
-    f.write("================ Summary ================\n"
+    f.write("================= Summary =================\n"
             "Time  avg max:\t%f\t%f\n"
             "Error avg max:\t%f\t%f\n" % (avg_time, max_time, avg_error, max_error))
 
-    print("================ Summary ================")
+    print("================= Summary =================")
     print("Time  avg max:\t%f\t%f" % (avg_time, max_time))
     print("Error avg max:\t%f\t%f" % (avg_error, max_error))
     f.close()
