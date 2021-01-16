@@ -65,6 +65,13 @@ class CNFState:
 
     # Change one bit in state and refresh values
     def flip(self, item_nr):
+        if self.truth_values_array[item_nr] == 1:
+            self.truth_values_array[item_nr] == 0
+        elif self.truth_values_array[item_nr] == 0:
+            self.truth_values_array[item_nr] == 1
+        else:
+            print("Unexpected value in truth values array.")
+        self.refresh()
         return False
 
     # Randomizes the state completely
