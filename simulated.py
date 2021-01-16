@@ -81,17 +81,38 @@ class CNFState:
     # Randomizes the state completely
     def randomize(self):
         # For every thing in array flip a coin
-        for thing_nr in range(1, self.variables+1):
+        for thing_nr in range(1, self.variables + 1):
             if random.randint(0, 1):
                 self.flip(thing_nr)
         return False
 
     # Try to find solution with randomize - if not, go with random
     def random_start(self):
+        for i in range(0, self.variables * 1000):
+            self.randomize()
+            if self.is_solution():
+                # print("Is a solution. :)")
+                return True
+            # print("Not a solution. :(")
+
+        self.randomize()
         return False
 
     # Compare two states and decide, which one is better
     def is_better(self, challenger):
+        # -- Both are solution
+        if challenger.satisfied and self.satisfied:
+            return self.weight > challenger.weight  # Better is the one with bigger weight
+        # -- None are solution
+        elif (not challenger.satisfied) and (not self.satisfied):
+            return self.weight > challenger.weight  # Better is the one with bigger weight
+        # -- Only this one is solution
+        elif (not challenger.satisfied) and self.satisfied:
+            return True  # Yes, this one is_better than challenger
+        # -- Only challenger is solution
+        elif challenger.satisfied and (not self.satisfied):
+            return False  # No, this one is NOT better than challenger
+
         return False
 
     def random_neighbour(self):

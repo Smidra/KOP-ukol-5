@@ -31,17 +31,24 @@ def main():
     m3 = Maxterm(3)
     m3.set(-3)
     inst.addMaxterm(m3)
-    print(inst)
+    # print(inst)
 
-    state = simulated.CNFState(inst)
-    state.truth_values_array[1] = 0
-    state.truth_values_array[2] = 0
-    state.truth_values_array[3] = 0
-    state.refresh()
+    state1 = simulated.CNFState(inst)
+    state1.truth_values_array[1] = 0
+    state1.truth_values_array[2] = 0
+    state1.truth_values_array[3] = 0
+    state1.refresh()
 
-    print(state)
-    state.randomize()
-    print(state)
+    state2 = simulated.CNFState(inst)
+    state2.truth_values_array[1] = 0
+    state2.truth_values_array[2] = 0
+    state2.truth_values_array[3] = 0
+    state2.refresh()
+    state2.randomize()
+
+    print(state1)
+    print(state2)
+    print(state1.is_better(state2))
 
 
 
