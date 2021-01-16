@@ -116,7 +116,23 @@ class CNFState:
         return False
 
     def random_neighbour(self):
-        return False
+        original = copy.deepcopy(self)
+        new = copy.deepcopy(original)
+        # If it is satisfied flip any random variable
+        if self.satisfied:
+            to_flip = random.randrange(1, self.variables + 1)
+            #print("Flipping %d" % to_flip)
+            new.flip(to_flip)
+        # If it is not satisfied flip any variable from suspect_variables_set (variables in unsolved maxterms)
+        else:
+            # Convert set to list because od python set implementation
+            suspect_list = list(self.suspect_variables_set)
+            random.shuffle(suspect_list)
+            random_suspect_var = suspect_list.pop()
+            #print("Flipping suspect %d" % random_suspect_var)
+            new.flip(random_suspect_var)
+
+        return new
 
 
 class KnapsackState:

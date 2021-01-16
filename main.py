@@ -36,7 +36,7 @@ def main():
     state1 = simulated.CNFState(inst)
     state1.truth_values_array[1] = 0
     state1.truth_values_array[2] = 0
-    state1.truth_values_array[3] = 0
+    state1.truth_values_array[3] = 1
     state1.refresh()
 
     state2 = simulated.CNFState(inst)
@@ -47,8 +47,10 @@ def main():
     state2.randomize()
 
     print(state1)
-    print(state2)
+    # print(state2)
     print(state1.is_better(state2))
+    state3 = state1.random_neighbour()
+    print(state3)
 
 
 
