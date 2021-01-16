@@ -1,0 +1,20 @@
+%% OPmac - REF file (\inputref)
+\Xrefversion{2}
+\Xpage{1}
+\Xtoc{1}{\rm }{1}{Specifikace úlohy}{1}
+\Xfnote
+\Xtoc{1}{\rm }{2}{Stručný popis zvoleného algoritmu}{1}
+\Xtoc{1}{\rm }{3}{Rozbor řešení}{1}
+\Xpage{2}
+\Xtoc{2}{\rm }{3.1}{Stavový prostor}{2}
+\Xtoc{2}{\rm }{3.2}{random\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em}start()}{2}
+\Xtoc{2}{\rm }{3.3}{Operace}{2}
+\Xtoc{1}{\rm }{4}{is\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em}better(state\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em}challenger)}{2}
+\Xtoc{2}{\rm }{4.1}{random\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em}neighbour()}{2}
+\Xtoc{2}{\rm }{4.2}{Normalizace ceny}{2}
+\Xtoc{2}{\rm }{4.3}{Ukončení}{2}
+\Xpage{3}
+\Xtoc{1}{\rm }{5}{Experimentace}{3}
+\Xpage{4}
+\Xtoc{1}{\rm }{6}{Zhodnocení experimentů}{4}
+\Xtoc{1}{\rm }{7}{Závěr}{4}

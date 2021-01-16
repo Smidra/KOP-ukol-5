@@ -1,6 +1,6 @@
 clear all;
 
-graf = importdata('../calculated_sim/chart_16_1855.dat');
+graf = importdata('../calculated_sim/chart_16_2211.dat');
 width = 2;
 
 plot( 1:1:size(graf) , graf(:), 'LineWidth', width); hold on

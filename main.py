@@ -64,7 +64,7 @@ def main():
     # for i in range(0, len(instances_array)):
         now = datetime.datetime.now()
         start = time.process_time()
-        instances_array[i].solve_sim(1, 0.97,  sys.argv[2] + now.strftime("chart_%d_%H%M.dat") )
+        instances_array[i].solve_sim(30, 0.97,  sys.argv[2] + now.strftime("chart_%d_%H%M.dat") )
         end = time.process_time()
 
         # print("Elapsed time is %f" % (float(end-start)))

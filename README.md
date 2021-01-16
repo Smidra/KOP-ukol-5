@@ -4,10 +4,12 @@ KOP - Úkol 5
 - ~~GitHub repo~~
 - ~~Pochop o co jde v zadání~~
 - ~~Pochop zápis instancí~~ 
-- Navrhni stavový prostor a operace 
-- Navrhni pro to třídu stav ideálně fungující s tvojí implementací simulovaného ochlazování 
-- Uprav načítání ze souboru instancí 
-- Uprav skriptování 
+- Navrhni stavový prostor a operace
+  - Všechny možné konfigurace
+  - změna jednoho bitu  
+- ~~Navrhni pro to třídu stav ideálně fungující s tvojí implementací simulovaného ochlazování~~ 
+- ~~Uprav načítání ze souboru instancí~~ 
+- ~~Uprav skriptování~~ 
 - Změř a vyzkoušej heuristiku 
 - Napiš report s grafy
 

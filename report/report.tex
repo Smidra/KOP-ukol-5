@@ -1,15 +1,15 @@
 \input opmac
 \chyph
 
-\tit Seznámení se se zvolenou pokročilou iterativní metodou na problému batohu
-\centerline{\bf 13. prosince 2020, Radek Šmíd}
+\tit Řešení problému vážené splnitelnosti booleovské formule pokročilou iterativní metodou
+\centerline{\bf 16. ledna 2021, Radek Šmíd}
 \medskip
-\centerline{\it https://github.com/Smidra/KOP-ukol-4}
+\centerline{\it https://github.com/Smidra/KOP-ukol-5}
 
 
 % Specifikace úlohy
 \sec Specifikace úlohy
-Cílem úlohy bylo implementovat jeden z pokročilých algoritmů pro řešení problému batohu.\break
+Cílem úlohy bylo implementovat jeden z pokročilých algoritmů pro řešení váženého problému 3SAT.\break
 Na výběr bylo z:
 
 \begitems
@@ -18,131 +18,92 @@ Na výběr bylo z:
 * Tabu search
 \enditems
 
-Po úspěšné implementaci algoritmu bylo za úkol provádět experiementy a seznámit se s pricipem nastavování parametrů. Proces experimentace jsem se pokusil zachytit v tomto dokumentu. Výsledné naměřené hodnoty pak prezentovat a pokusit se o interpretaci\fnote{https://moodle-vyuka.cvut.cz/mod/assign/view.php?id=89702}.
+Po úspěšném nasazení algoritmu bylo za úkol jeho vlastnosti ověřit experimentálním vyhodnocením. Zpráva by měla dokládat záznam o celém postupu řešení problému a nsazení. Proces experimentace (white box i black box fáze testování) jsem se pokusil zachytit v tomto dokumentu. Výsledné naměřené hodnoty pak prezentovat a pokusit se o interpretaci\fnote{https://moodle-vyuka.cvut.cz/mod/assign/view.php?id=89703}.
 
 
 % Co je to simulované ochlazování
 \sec Stručný popis zvoleného algoritmu
-Zvolil jsem si algoritmus simulovaného ochlazování. Je to pravděpodobnostní metoda řešení problému založená na analogii se simulací ochlazování tuhnoucího kovu. Metoda prohledává stavový prostor a má tendenci zůstávat v lokálních minimech. Algoritmus nezaručuje nalezení globálního minima, ale správým nastavením jeho parametrů (teplota, chladící koeficient) můžeme docílit velmi přesných výsledků.
+Zvolil jsem si algoritmus simulovaného ochlazování, stejně jako v předchozí úloze. Je to pravděpodobnostní metoda řešení problému založená na analogii se simulací ochlazování tuhnoucího kovu. Metoda prohledává stavový prostor a má tendenci zůstávat v lokálních minimech. Algoritmus nezaručuje nalezení globálního minima, ale správým nastavením jeho parametrů (teplota, chladící koeficient) můžeme docílit velmi přesných výsledků.
 
 
 % Rozbor možných řešení + Jak jsem řešil já
 \sec Rozbor řešení
-Řešení znovu staví na základech položených v předchozích cvičeních. Instance problému batohu jsou drženy v paměti jako objekty třídy KnapsackInstance. Pro tuto úlohu jsem připsal ještě třídu {\bf KnapsackState}. Ta reprezentuje jeden stav nějaké instance problému batohu. Má metody:
+Řešení staví na pevných základech objektového návrhu z předchozích cvičení. Pro tuto úlohu jsem ale nemohl předchozí kód pouze rozšířit o novou metodu. Musel jsem značné části celého kódu přepsat a vytvořit tak nové třídy, které korektně implementují problém váženého 3SAT (dále už jen 3SAT). Instance 3SAT problému jsou drženy v poli jako objetky třídy CNFInstance. Třídu KnapsackState z předchozího cvičení jsem přepsal jako třídu CNFState. Ta reprezentuje jeden stav (ohodnocení proměnných) nějaké instance 3SAT.
+
+Má metody:
 \begitems
-* is\_solution -- Vrací bool podle toho jestli je stav řešením problému.
-* flip( int n ) -- Věc na pozici $n$ buď vyndá z batohu, nebo ji tam přidá.
-* randomize -- Vyrobí náhodný, validní stav.
-* random\_solution -- Vyrobí náhodné řešení.
-* is\_better( state challenger ) -- Porovná, jestli je lepší tento stav nebo challenger.
-* random\_neighbour\_solution -- Vrátí náhodný sousední stav, který je také řešení problému.
+* is\_solution() -- Vrací bool podle toho jestli jsou všechny maxtermy pravda pro toto ohodnocení. Pokud nějaký maxterm není splněný, poznamená si proměnné, které se v něm vyskytují jako \uv{podezřelé}.
+* refresh() -- Zavolá is\_solution() aby vystavěl aktuální množinu podezřelých proměnných. Pak spočítá celkovou váhu pro toto konkrétní ohodnocení.
+* flip( n ) -- Proměnnou na pozici $n$ invertuje (0 na 1, nebo 1 na 0)
+* randomize() -- Ohodnotí proměnné náhodně a zavolá metodu refresh().
+* random\_start() -- Pokusí se oprakovaných voláním metody randomize() nalézt platné řešení. Pokud ho po n krát 1000 krocích nenalezne, spokojí se s jakýmkoliv náhodným stavem.
+* is\_better( state\_challenger ) -- Porovná, jestli tento stav lepší než challenger stav. Více níže.
+* random\_neighbour() -- Vrátí náhodný sousední stav. Více níže.
 \enditems
 
 \secc Stavový prostor
-Jako stavový prostor problému batohu jsem zvolil všechna řešení problému. Algoritmus odmítá relaxovat vstoupením do nevalidního stavu. Pro získání co nejlepších vlastností podle přednášky je prospěšné začínat z náhodného stavu. Proto je třeba vygenerovat na začátek náhodné řešení.
+Jako stavový prostor 3SAT problému jsem zvolil všecha možná ohodnocení proměnných. Algoritmus tedy připouští i takové stavy, které mají proměnné ohodnocené tak, že celková CNF není splněna. Zvolil jsem tento prostor proto, že je spojitý a jistě obsahuje optimální řešení. Taková volba značně ztíží vyladění algoritmu, protože jistě budou existovat takové stavy, které mají lepší váhu, ale nejsou řešení. Pro získání co nejlepších vlastností podle přednášky je prospěšné začínat z náhodného stavu. Proto je třeba vygenerovat na začátek náhodné řešení. Jenže to také nemusíme najít.
 
-\secc random\_solution
-Tato funkce se použije při hledání startovacího stavu. V cyklu randomizuje stav a ptá se jestli je to validní řešení. Tento cyklus opakuje až do pětinásobku počtu věcí v batohu. Pokud se jí ani pak nepodaří najít validní řešení svojí práci vzdá a začne od triviálního řešení.
+\secc random\_start()
+Tato funkce se použije při hledání startovacího stavu. V cyklu randomizuje stav a ptá se jestli je to validní řešení. Tento cyklus opakuje až do tisícinásobku počtu proměnných. Pokud se jí ani pak nepodaří najít validní řešení svojí práci vzdá a začne od jakéhokoliv náhodného řešení.
 
 \secc Operace
-Zvolené operace jsou změna jednoho bitu. Tedy buď přidání nebo odebrání věci z/do batohu takovým způsobem, že se neprotrhne. Tato operace je implementována metodou flip.
+Zvolené operace jsou změna jednoho bitu. Tedy buď změna ohodnocení proměnné z 1 na 0, nebo naopak. Tato operace je implementována metodou flip(). Po změně je vždy volána metoda refresh(), která atributy objektu aktualizuje.
 
-\secc random\_neighbour\_solution
-Se použije ve funkci {\bf try}, kde vybíráme náhodného souseda. Tedy takový stav, pro který stačí použít jednou metodu flip, abychom ho dosáhli. Nalezený soused, ale samozřejmě musí být validní řešení. Prostor bude jistě spojitý, protože pokud z řešení odebereme věc, je to stále řešení. Postupným odebíráním věcí se dostaneme až do triviálního řešení, které máme k dispozici vždy. 
+\sec is\_better(state\_challenger)
+Metoda, která rozhodne, jestli je lepší tento stav, nebo vyzivatel. Po dlouhé úvaze jsem se rozhodl tuto metodu ponechat implementovanou obdobně jako v úloze 4. Existují čtyři možnosti, které mohou nastat.
+
+\begitems
+* Tento (je řešení) x Vyzivatel (je řešení) -- Rozhodne lepší váha.
+* Tento (není řešení) x Vyzivatel (není řešení) -- Rozhodne lepší váha.
+* Tento (není řešení) x Vyzivatel (je řešení) -- Tento je lepší.
+* Tento (je řešení) x Vyzivatel (není řešení) -- Vyzivatel je lepší.
+\enditems
+
+\secc random\_neighbour()
+Se použije ve funkci {\bf try()}, kde vybírám náhodného souseda. Tedy takový stav, pro který stačí použít jednou metodu flip. Nalezený soused nemusí být validní řešení. Abych pomohl heuristice od  \uv{bezcílného} bloudění, tak se nejdříve podívám, zda je stav řešení. Pokud není, pak cesta k řešení vede pouze skrz obracení proměnných přítomných v nesplněných maxtermech. Pokud stav je řešení, vyberu náhodnou proměnnou (s plným vědomím, že pokud to nebude řešení, tak vždy zvítězí stávající stav).
 
 \secc Normalizace ceny
-Aby nehrály roli jednotky ve kterých je cena uvedena (koruny/haléře), tak jsem rozdíl cen implementoval speciální funkcí. Ta vezme cenu prvního stavu ($c1$) a vypočítá konstantu $a$ pomocí které lze naškálovat $c1$ na 100. Cenu druhého stavu pak vynásobí stejnou konstantou. Od $100$ pak odečte $c2$ a získá normalizovaný rozdíl ceny stavů, který se nebude s jednotkami měnit. Tím získáme stabilnější algoritmus, protože abolutní velikosti cen nebudou mít vliv na teplotu při vyhodnocování funkce try.
+Aby nehrály roli jednotky ve kterých je váha uvedena (koruny/haléře), tak jsem rozdíl cen implementoval speciální funkcí. Ta vezme váhu prvního stavu ($c1$) a vypočítá konstantu $a$ pomocí které lze naškálovat $c1$ na 100. Váhu druhého stavu pak vynásobí stejnou konstantou. Od $100$ pak odečte $c2$ a získá normalizovaný rozdíl vah stavů, který se nebude s jednotkami měnit. Tím získáme stabilnější algoritmus, protože abolutní velikosti vah nebudou mít vliv na teplotu při vyhodnocování funkce try(). Úplně stejně jako s cenami v úloze 4.
 
 
 \secc Ukončení
-Funkce frozen vrátí True po třiceti kolech beze změny. Funkce equilibrium vrátí True po dvojnásobku počtu věcí v instanci.
+Funkce frozen vrátí True po 300 kolech beze změny. Funkce equilibrium vrátí True po dvojnásobku počtu věcí v instanci.
 
 
 \vfill\break
 \sec Experimentace
-Používám instance o velikosti 32. Prvotní nastavení parametrů bylo náhodné $t = 10$ a $c = 0.995$ (chladící koeficient) podle simulátoru. Sleduji vývoj ceny v grafu. Algoritmus došel k řešení 32944, což je správné řešení první instance.
+Proces experimentace jsem si téměř celý automatizoval. Program generuje do souboru {\bf chart\_X\_YZ.dat} vývoj váhy, přímo zatímco ji počítá. GNU Octave tento soubor čte a na pořádání z něj rovnou vytvoří graf vývoje váhy v krocích.
 
-% Obrázek Graf02.pdf
-\centerline{ \picwidth=15cm \inspic{graf02.pdf} }
+Používám dodané instance {\bf wuf20-78-M1} o velikosti dvaceti proměnných a sedmdesáti osmi maxtermy. Prvotní nastavení parametrů by mohlo být náhodné, ale rozhodl jsem se pro výsledné hodnoty čtvrtého úkolu. Tedy  $t = 30$ a $c = 0.97$. V první fázi se pokusím vyladit algoritmus na instanci problému s $id=01$.
+
+Sleduji vývoj ceny v grafu níže. Algoritmus došel k řešení 6403, což je správné řešení první instance. Graf vypadá tak, jak by měl -- konverguje v polovině až dvou třetinách.
+
+
+
+\centerline{ \picwidth=17cm \inspic{chart01.pdf} }
 \caption/f Vývoj ceny stavu pro první experiment.
 \bigskip
 
-Podle grafu vidíme, že sice nejlepší stav algoritmus úspěšně našel, ale úplně nakonec se v něm neustálil. Velmi pozitivně vnímám, že jsme se dostali ke správnému řešení a k jasnému vzestupnému trendu grafu. Naopak negativní je pomalá konvergence k řešení a možná až příliš velká diverzifikace. Podíváme se na graf vývoje nejlepší ceny a podle něho se budeme dále rozhodovat. Program znovu spustíme, takže konkrétní hodnoty budou jiné. 
 
-% Obrázek graf03.pdf
-\centerline{ \picwidth=14cm \inspic{graf03.pdf} }
-\caption/f Vývoj nejlepší ceny pro první experiment.
-\bigskip
-
-Pro druhý běh algoritmus skončil s nepatrnou chybou, těsně vedle správného řešení. Přišel na něj ale podle grafu poměrně brzy. Ze zjištěných hodnot uvažuji co bych mohl zlepšit. Snížením chladícího koeficientu bychom měli dosáhnout menší intezifikace a tedy možná méně \uv{šílené} křivky. To by v kombinaci s poměrně rychle nalezeným řešením mohlo dávat dobré výsledky. Nasavíme tedy chladící koeficient na $c=0.99$.
-
-% Obrázek graf04.pdf
-\centerline{ \picwidth=15cm \inspic{graf04.pdf} }
-\caption/f Vývoj ceny stavu pro druhý experiment.
-\bigskip
-
-Algoritmus opět skončil s cenou 32941, tedy těsně vedle výsledku. Pravděpodobně se bude jednat o nešťastné lokální minimum. Zlepšením je dosažení stejného výsledku během přibližně polovičního počtu kroků. Stále to ale vypadá, že bychom mohli zmenšit diverzifikaci při pohledu na velké skoky cen stavů. Pokusíme se to udělat zmenšením startovací teploty na polovinu, tedy $t=5$.
-
-% Obrázek graf05.pdf
-\centerline{ \picwidth=14cm \inspic{graf05.pdf} }
-\caption/f Vývoj ceny stavu pro třetí experiment.
-\bigskip
-
-Tento běh dospěl ke správné nejlepší ceně. Zase se nám zmenšil poče kroků. V grafu ale nevidíme tak sebevědomý růst křivky vzhůru, jako v předhozím příkladech. I přesto zkusíme jaké by to bylo cenu ještě jednou zmenšit. Tentokrát na 2. 
-\vfill\break
-
-% Obrázek graf06.pdf
-\centerline{ \picwidth=15cm \inspic{graf06.pdf} }
-\caption/f Vývoj ceny stavu pro čtvrtý experiment.
-\bigskip
-
-Řešení stále dává správné. Ale rozhodně bude třeba zvednout intenzifikaci. Heuristika se dostane do správného stavu, klidně i několikrát, ale nemá žádný problém z něj utéct. Tentokrát naopak zvedneme ochlazovací koeficient. $c=0.999$
-
-% Obrázek graf07.pdf
-\centerline{ \picwidth=15cm \inspic{graf07.pdf} }
-\caption/f Vývoj ceny stavu pro pátý experiment.
-\bigskip
-
-Stále se držíme správných výsledků, což indikuje, že heuristika stále funguje a naše parametry nejsou příliš špatné. Bohužel podle grafu vypadá toto řešení opravdu špatně. Heuristika uteče v podstatě z každého minima a není vůbec vidět sebevědomá konvergence ke správnému řešení. Jako poslední experiment se ještě pokusíme podruhé snížit koeficient chlazení. Tentorktát na $c=0.9$.
-
-% Obrázek graf08.pdf
-\centerline{ \picwidth=17cm \inspic{graf08.pdf} }
-\caption/f Vývoj ceny stavu pro šestý experiment.
-\bigskip
-
-Tento experiment trval zásadně nejkratší dobu kvůli velmi nízkému počtu kroků. Bohužel také dosál nejhoršího řešení (32723) pořád je to ale velmi blízko pravdě. Konečně jsme dosáhli menšího \uv{vyskakování} z minim. Také vidíme jak se hodnota na konci ustaluje. Celkově vzato toto vypadá zatím jako nejlepší nastavení, také proto, že je velmi rychlé. Provedeme několik běhů programu za sebou a prozkoumáme, jestli řešení nedává příliš často velké chyby.
-
-\bigskip
-\centerline{\table{r|l}{
-Běh&Chyba\crl
-1.&221\cr
-2.&305\cr
-3.&0\cr
-4.&898\cr
-5.&0\cr
-}}\bigskip
-
-Bohužel ukazuje se, že toto nastavení může dosahovat poměrně velkých chyb. Výsledné nastavení tedy přiblížíme již naměřenému $t=2$, $c=0.99$. Jako poslední nastavení tedy zvolíme $t=2$ a $c=0.97$.
+%\centerline{\table{r|l}{
+%Běh&Chyba\crl
+%1.&0\cr
+%}}\bigskip
 
 
-% Obrázek graf09.pdf
-\centerline{ \picwidth=17cm \inspic{graf09.pdf} }
-\caption/f Vývoj ceny stavu pro sedmý experiment.
-\bigskip
 
-A ještě zkontolujeme namátkově jestli nedělá veliké chyby.
 
-\bigskip
-\centerline{\table{r|l}{
-Běh&Chyba\crl
-1.&0\cr
-2.&0\cr
-3.&78\cr
-4.&0\cr
-5.&108\cr
-}}\bigskip
 
-Nevypadá to, že by dělalo, uvidíme jak si toto nastavení povede s chybovostí při black box textování.
+
+
+
+
+
+
+
+
+
 
 
 \vfill\break
@@ -174,9 +135,9 @@ Chyba& 51.4\%& 2.7\%\cr
 To je bohužel stále moc veliká chybovost. Zkusme se podívat i na jiné parametry. Je možné, že mám příliš rychlou ukončovancí podmínku. Tedy, že se tavenina příliš rychle prohlásí za zmraženou. Místo třiceti kol bez žádné změny toto číslo rapidně zvednu na 300. Abych dosahoval výrazně lepší chybovosti razantně také zvednu teplotu na $t=30$.
 
 % Obrázek graf09.pdf
-\centerline{ \picwidth=17cm \inspic{graf19.pdf} }
-\caption/f Vývoj ceny stavu pro osmý experiment.
-\bigskip
+%\centerline{ \picwidth=17cm \inspic{graf19.pdf} }
+%\caption/f Vývoj ceny stavu pro osmý experiment.
+%\bigskip
 
 Vypadá to, že jsme nalezli chybu. Heuristika se úspěšně usadila v nejlepším stavu. Přitom kroků bylo ještě přijatelné množství. Přejdeme tedy s touto nejnovější iterací parametrů zpátky do black--box testingu. Pustím heuristiku zase na 100 instancí a zaznamenám vlastnosti řešení.
 
@@ -190,6 +151,14 @@ Chyba& 5.5\%& 0.6\%\cr
 \hfill $\epsilon\upsilon\rho\eta\kappa\alpha$!
 
 Řešení je nyní velmi uspokojivé, přijmeme ho a experimentaci ukončíme.
+
+
+
+
+
+
+
+
 
 % Interpretace výsledků
 \sec Závěr
