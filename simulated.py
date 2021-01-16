@@ -116,8 +116,7 @@ class CNFState:
         return False
 
     def random_neighbour(self):
-        original = copy.deepcopy(self)
-        new = copy.deepcopy(original)
+        new = copy.deepcopy(self)
         # If it is satisfied flip any random variable
         if self.satisfied:
             to_flip = random.randrange(1, self.variables + 1)
