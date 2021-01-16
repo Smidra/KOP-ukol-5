@@ -66,7 +66,9 @@ class CNFState:
 
     # Change one bit in state and refresh values
     def flip(self, item_nr):
-        if self.truth_values_array[item_nr] == 1:
+        if item_nr > self.of_instance.number_of_variables:
+            print("Index out of rangle when flipping. Very bad!")
+        elif self.truth_values_array[item_nr] == 1:
             self.truth_values_array[item_nr] = 0
         elif self.truth_values_array[item_nr] == 0:
             self.truth_values_array[item_nr] = 1
