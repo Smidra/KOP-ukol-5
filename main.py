@@ -34,13 +34,13 @@ def main():
     print(inst)
 
     state = simulated.CNFState(inst)
-    state.truth_values_array[1] = 1
-    state.truth_values_array[2] = 1
+    state.truth_values_array[1] = 0
+    state.truth_values_array[2] = 0
     state.truth_values_array[3] = 0
     state.refresh()
 
     print(state)
-    state.flip(3)
+    state.randomize()
     print(state)
 
 

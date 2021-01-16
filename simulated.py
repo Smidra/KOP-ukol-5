@@ -12,7 +12,8 @@ ESCAPE_TEMPERATURE = 0.01
 # truth_values_array[3] = 1    Third variable is set to True
 class CNFState:
     def __init__(self, instance):
-        self.truth_values_array = [0] * (instance.number_of_variables + 1)
+        self.variables = instance.number_of_variables
+        self.truth_values_array = [0] * (self.variables + 1)
         self.truth_values_array[0] = -420
         self.of_instance = instance
         self.weight = -1
@@ -66,7 +67,7 @@ class CNFState:
 
     # Change one bit in state and refresh values
     def flip(self, item_nr):
-        if item_nr > self.of_instance.number_of_variables:
+        if item_nr > self.variables:
             print("Index out of rangle when flipping. Very bad!")
         elif self.truth_values_array[item_nr] == 1:
             self.truth_values_array[item_nr] = 0
@@ -79,6 +80,10 @@ class CNFState:
 
     # Randomizes the state completely
     def randomize(self):
+        # For every thing in array flip a coin
+        for thing_nr in range(1, self.variables+1):
+            if random.randint(0, 1):
+                self.flip(thing_nr)
         return False
 
     # Try to find solution with randomize - if not, go with random
