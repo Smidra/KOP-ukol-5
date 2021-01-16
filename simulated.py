@@ -243,7 +243,7 @@ def cool(temperature, a):
 
 def equilibrium(state, step, accepted):
     # if accepted >= state.boxes:
-    if step >= state.boxes * 2:
+    if step >= state.variables * 2:
         return True
     return False
 
@@ -263,14 +263,14 @@ def frozen(t, rounds_without_better_state, rounds_since_new_state):
 
 
 def normalized_value_diff(stateA, stateB):
-    coeficient = 100.0 / float(stateA.value)
-    diff = 100.0 - (float(stateB.value) * coeficient)
+    coeficient = 100.0 / float(stateA.weight)
+    diff = 100.0 - (float(stateB.weight) * coeficient)
     return diff
 
 
 def try_state(state, temperature):
     # Zvol náhodného souseda
-    new = state.random_neighbour_solution()
+    new = state.random_neighbour()
     # Přijmi jej, je li lepší
     if new.is_better(state):
         # print("Better")
@@ -291,7 +291,7 @@ def solve_sim(self, start_temperature, cooling_coefficient):
     print("-- Simulated Cooling --")
 
     state = CNFState(self)
-    state.random_solution()
+    state.random_start()
     best = CNFState(self)  # Empty state is the default state of CNFState
     temperature = start_temperature
     rounds_without_better_state = 0
@@ -325,7 +325,7 @@ def solve_sim(self, start_temperature, cooling_coefficient):
 
     print("--- Finished ---")
     print(best)
-    self.best_cost = best.value
-    self.best_solution = best.combination_array
+    self.best_weight = best.weight
+    self.best_solution = best.truth_values_array
 
     return best.value
