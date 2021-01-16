@@ -159,9 +159,9 @@ class Maxterm:
     def isSatisfiedWith(self, configuration):
         result = False
 
-        j=-1
+        j = -1
         for variable in self.configuration:
-            j+=1
+            j += 1
             if (variable == -420) or (variable == 0):
                 continue
             elif variable == 1:
@@ -175,7 +175,17 @@ class Maxterm:
 
     # Return Maxterm variables
     def getVars(self):
-        return self.configuration
+        vars_of_maxterm = set()
+        j = -1
+        for var in self.configuration:
+            j += 1
+            if (var == -420) or (var == 0):
+                continue
+            elif (var == 1) or (var == -1):
+                # print("Adding %d to set." % (j))
+                vars_of_maxterm.add(j)
+
+        return vars_of_maxterm
 
 
 class CNFInstance:

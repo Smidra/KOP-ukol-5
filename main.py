@@ -14,14 +14,25 @@ def main():
     instances_array = load_instances_file(sys.argv[1])
     load_solution_file(sys.argv[3], instances_array)
 
+    configuration = [-420, 1, 0, 1]
+
     m = Maxterm(3)
     m.set(-1)
     m.set(2)
-    print(m)
-    configuration = [-420, 1, 0, 1]
-    suspicious_var = {}
-    print(m.getVars())
+    m.set(-3)
     print(m.isSatisfiedWith(configuration))
+
+    n = Maxterm(3)
+    n.set(3)
+    print(m.isSatisfiedWith(configuration))
+
+    suspicious_var = set()
+    print(suspicious_var)
+    suspicious_var = suspicious_var.union(m.getVars())
+    print(suspicious_var)
+    suspicious_var = suspicious_var.union(n.getVars())
+    suspicious_var = suspicious_var.union(n.getVars())
+    print(suspicious_var)
 
     exit(1)
 
