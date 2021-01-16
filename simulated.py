@@ -120,7 +120,7 @@ class CNFState:
         # If it is satisfied flip any random variable
         if self.satisfied:
             to_flip = random.randrange(1, self.variables + 1)
-            #print("Flipping %d" % to_flip)
+            # print("Flipping %d" % to_flip)
             new.flip(to_flip)
         # If it is not satisfied flip any variable from suspect_variables_set (variables in unsolved maxterms)
         else:
@@ -128,7 +128,7 @@ class CNFState:
             suspect_list = list(self.suspect_variables_set)
             random.shuffle(suspect_list)
             random_suspect_var = suspect_list.pop()
-            #print("Flipping suspect %d" % random_suspect_var)
+            # print("Flipping suspect %d" % random_suspect_var)
             new.flip(random_suspect_var)
 
         return new
@@ -317,8 +317,8 @@ def solve_sim(self, start_temperature, cooling_coefficient):
                 rounds_without_better_state += 1
             step += 1
 
-            # print("%d" % (state.value))
-            # print("%d" % (best.value))
+            print("%d" % (state.weight))
+            # print("%d" % (best.weight))
 
         temperature = cool(temperature, cooling_coefficient)
         # print("Rounds without new better: %d" % (rounds_without_better_state))
@@ -327,5 +327,6 @@ def solve_sim(self, start_temperature, cooling_coefficient):
     print(best)
     self.best_weight = best.weight
     self.best_solution = best.truth_values_array
+    self.solved = True
 
-    return best.value
+    return best.weight
