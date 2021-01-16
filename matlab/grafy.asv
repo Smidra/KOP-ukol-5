@@ -1,13 +1,12 @@
 clear all;
 
-graf = importdata('../calculated_sim/chart_16_1855.dat');
+graf = importdata('../calculated_sim/16_1830.dat');
 width = 2;
 
-plot( 1:1:size(graf) , graf(:), 'LineWidth', width); hold on
+plot( 1:1:size(graf) , graf(:), 'LineWidth', width, 'color', [0.4660 0.6740 0.1880]); hold on
 
 
 % ----- ZKC -----
-% 'color', [0.4660 0.6740 0.1880]
 % [0.6350 0.0780 0.1840] - cervena
 % [0.8500 0.3250 0.0980] - orandzova
 % [0.4940 0.1840 0.5560] - fialova
@@ -21,6 +20,6 @@ grid
 
 legend('t=30, c=97')
 
-ylabel('Váha')
+ylabel('Cena')
 xlabel('Kroků')
 hold off

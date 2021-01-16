@@ -2,6 +2,7 @@ import sys  # work with arguments
 from classes import *  # Custom made classes file
 import time
 import os  # For getting files in the directory
+import datetime # For automatic chart data names
 
 import simulated
 
@@ -61,8 +62,9 @@ def main():
     # Solve every instance
     for i in range(0, 1):
     # for i in range(0, len(instances_array)):
+        now = datetime.datetime.now()
         start = time.process_time()
-        instances_array[i].solve_sim(30, 0.97)
+        instances_array[i].solve_sim(1, 0.97,  sys.argv[2] + now.strftime("chart_%d_%H%M.dat") )
         end = time.process_time()
 
         # print("Elapsed time is %f" % (float(end-start)))
@@ -85,6 +87,7 @@ def getKey(item):
 
 # Load instances from file to objects in array
 def load_instances_file(directory_location):
+    print("Loading instances")
     instances_array = []
 
     # Get all the available problems in specified folder
@@ -149,7 +152,7 @@ def load_instances_file(directory_location):
             print("Did not get the expected number of maxterms when loading instance number %d." % (problem_id))
         else:
             # print(new_instance)
-            print("Loaded instance: %d" % (problem_id))
+            # print("Loaded instance: %d" % (problem_id))
             # Append new instance to instances_array.
             instances_array.append(new_instance)
 
@@ -233,12 +236,13 @@ def save_complexity_file(file_location, instances_array):
             max_time = instance.time
         time_sum += instance.time
         # Find max and avg error
-        current_error = abs(instance.best_weight - instance.given_best_weight)
+        #current_error = abs(instance.best_weight - instance.given_best_weight) # Aboslute value of error
+        current_error = float(abs(instance.best_weight - instance.given_best_weight)) / (instance.given_best_weight/100.0) # Relative value of error
         if current_error > max_error:
             max_error = current_error
         error_sum += current_error
         # Print the complexity file
-        f.write("%d\t%d\t%d\t%d\t%f\n" % (instance.id,
+        f.write("%d\t%d\t%d\t%f\t%f\n" % (instance.id,
                                       instance.best_weight,
                                       instance.given_best_weight,
                                       current_error,
@@ -249,11 +253,11 @@ def save_complexity_file(file_location, instances_array):
     avg_error = error_sum / instances_sum
     f.write("================ Summary ================\n"
             "Time  avg max:\t%f\t%f\n"
-            "Error avg max:\t%d\t\t%d\n" % (avg_time, max_time, avg_error, max_error))
+            "Error avg max:\t%f\t%f\n" % (avg_time, max_time, avg_error, max_error))
 
     print("================ Summary ================")
     print("Time  avg max:\t%f\t%f" % (avg_time, max_time))
-    print("Error avg max:\t%d\t\t%d" % (avg_error, max_error))
+    print("Error avg max:\t%f\t%f" % (avg_error, max_error))
     f.close()
 
 if __name__ == '__main__':

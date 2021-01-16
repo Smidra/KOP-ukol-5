@@ -287,7 +287,7 @@ def try_state(state, temperature):
     return state, False
 
 
-def solve_sim(self, start_temperature, cooling_coefficient):
+def solve_sim(self, start_temperature, cooling_coefficient, output_chart_data_filename ):
     print("-- Simulated Cooling --")
 
     state = CNFState(self)
@@ -296,6 +296,8 @@ def solve_sim(self, start_temperature, cooling_coefficient):
     temperature = start_temperature
     rounds_without_better_state = 0
     rounds_since_new_state = 0
+    # For automatic chart data saving
+    f = open(output_chart_data_filename, "w")
 
     while not frozen(temperature, rounds_without_better_state, rounds_since_new_state):
         # print("New temp is %d" % (temperature))
@@ -317,12 +319,15 @@ def solve_sim(self, start_temperature, cooling_coefficient):
                 rounds_without_better_state += 1
             step += 1
 
-            print("%d" % (state.weight))
+            # Save evolution of weight for graphing purposes
             # print("%d" % (best.weight))
+            # print("%d" % (state.weight))
+            f.write("%d\n" % (state.weight) )
 
         temperature = cool(temperature, cooling_coefficient)
         # print("Rounds without new better: %d" % (rounds_without_better_state))
 
+    f.close()
     print("--- Finished ---")
     print(best)
     self.best_weight = best.weight
