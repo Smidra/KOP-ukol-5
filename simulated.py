@@ -3,39 +3,65 @@ import copy
 import math
 
 ROUNDS_SINCE_CHANGE = 300
-ESCAPE_TEMPERATURE  = 0.01
+ESCAPE_TEMPERATURE = 0.01
 
+
+# A class representing one of the states
+# central is the truth_values_array (ohodnocení)
+# truth_values_array[1] = 0    First variable is set to False
+# truth_values_array[3] = 1    Third variable is set to True
 class CNFState:
     def __init__(self, instance):
-        self.of_instance = instance
         self.truth_values_array = [0] * (instance.number_of_variables + 1)
         self.truth_values_array[0] = -420
+        self.of_instance = instance
         self.weight = -1
 
-        self.is_satisfied = False
+        self.satisfied = False
         self.suspect_variables_set = set()
 
         # Refresh instance
         self.refresh()
 
+    # Prints the state
+    def __str__(self):
+        return "--- State of instance nr %d ---\n" \
+               "TVA:\t\t%s\n" \
+               "Weight:\t\t%d\n" \
+               "Satisfied:\t%r\n" \
+               "Suspect:\t%s\n" % (self.of_instance.id, str(self.truth_values_array), self.weight, self.satisfied, self.suspect_variables_set)
+
     # Returns True if this CNF configuration state has all maxterms satisfied
-    # Sets the "is_satisfied" attribute
+    # Sets the "satisfied" attribute
     # Creates up-to date suspect variables set
     def is_solution(self):
-        self.is_satisfied = True
+        self.satisfied = True
         # For every maxterm find out if it is satisfied
         for maxterm in self.of_instance.maxterm_array:
             if not maxterm.isSatisfiedWith(self.truth_values_array):
                 # If not get its variables and add them to "suspect_variables_set" ans set "is_satisfied" to False
                 self.suspect_variables_set = self.suspect_variables_set.union(maxterm.getVars())
-                self.is_satisfied = False
+                self.satisfied = False
 
-        return self.is_satisfied
+        return self.satisfied
 
-    # Sets the "is_satisfied" and "suspect_variables_set" attributes with is_solution method
+    # Sets the "satisfied" and "suspect_variables_set" attributes with is_solution method
     # Calculates the current weight to "weight" attribute
     def refresh(self):
-        return False
+        self.is_solution()
+        current_weight = 0
+        j = -1
+        # For every variable that is set as True, find the weight.
+        for variable in self.truth_values_array:
+            j += 1
+            if (variable == 0) or (variable == -420):
+                continue
+            elif variable == 1:
+                current_weight += self.of_instance.weight_of_variables[j]
+            else:
+                print("Unexpected variable weight when refreshing.")
+        self.weight = current_weight
+        return True
 
     # Change one bit in state and refresh values
     def flip(self, item_nr):
@@ -56,8 +82,6 @@ class CNFState:
     def random_neighbour(self):
         return False
 
-    def __str__(self):
-        return "---"
 
 class KnapsackState:
     def __init__(self, instance):
@@ -198,17 +222,17 @@ def try_state(state, temperature):
     new = state.random_neighbour_solution()
     # Přijmi jej, je li lepší
     if new.is_better(state):
-        #print("Better")
+        # print("Better")
         return new, True
 
     # Jinak jej přijmi s převědpodobností závislou na zhoršení
     sigma = float(normalized_value_diff(state, new))
     # print(math.exp(-sigma / temperature))
     if (random.random() < math.exp(-sigma / temperature)):
-        #print("Beneveolent")
+        # print("Beneveolent")
         return new, True
 
-    #print("Not good enough.")
+    # print("Not good enough.")
     return state, False
 
 

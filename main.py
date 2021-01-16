@@ -16,6 +16,7 @@ def main():
     # load_solution_file(sys.argv[3], instances_array)
 
     inst = CNFInstance(1, 3)
+    inst.setWeight(0, -420)
     inst.setWeight(1, 10)
     inst.setWeight(2, 20)
     inst.setWeight(3, 30)
@@ -31,12 +32,13 @@ def main():
     m3.set(-3)
     inst.addMaxterm(m3)
     print(inst)
+
     state = simulated.CNFState(inst)
     state.truth_values_array[1] = 1
     state.truth_values_array[2] = 1
-    state.truth_values_array[3] = 1
-    print(state.is_solution())
-    print(state.suspect_variables_set)
+    state.truth_values_array[3] = 0
+    state.refresh()
+    print(state)
 
 
 
