@@ -158,13 +158,18 @@ class Maxterm:
     # Is the maxterm satisfied?
     def isSatisfiedWith(self, configuration):
         result = False
+
+        j=-1
         for variable in self.configuration:
+            j+=1
             if (variable == -420) or (variable == 0):
                 continue
             elif variable == 1:
-                result = configuration or result
+                print("%r or %r" % (configuration[j], result))
+                result = configuration[j] or result
             elif variable == -1:
-                result = (not configuration) or result
+                print("%r or %r" % (not configuration[j], result))
+                result = (not configuration[j]) or result
 
         return result
 

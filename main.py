@@ -14,6 +14,17 @@ def main():
     instances_array = load_instances_file(sys.argv[1])
     load_solution_file(sys.argv[3], instances_array)
 
+    m = Maxterm(3)
+    m.set(-1)
+    m.set(2)
+    print(m)
+    configuration = [-420, 1, 0, 1]
+    suspicious_var = {}
+    print(m.getVars())
+    print(m.isSatisfiedWith(configuration))
+
+    exit(1)
+
     # Solve every instance
     for i in range(0, len(instances_array)):
         start = time.process_time()
