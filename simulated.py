@@ -29,7 +29,8 @@ class CNFState:
                "TVA:\t\t%s\n" \
                "Weight:\t\t%d\n" \
                "Satisfied:\t%r\n" \
-               "Suspect:\t%s\n" % (self.of_instance.id, str(self.truth_values_array), self.weight, self.satisfied, self.suspect_variables_set)
+               "Suspect:\t%s\n" % (self.of_instance.id, str(self.truth_values_array), self.weight, self.satisfied,
+                                   self.suspect_variables_set)
 
     # Returns True if this CNF configuration state has all maxterms satisfied
     # Sets the "satisfied" attribute
@@ -66,9 +67,9 @@ class CNFState:
     # Change one bit in state and refresh values
     def flip(self, item_nr):
         if self.truth_values_array[item_nr] == 1:
-            self.truth_values_array[item_nr] == 0
+            self.truth_values_array[item_nr] = 0
         elif self.truth_values_array[item_nr] == 0:
-            self.truth_values_array[item_nr] == 1
+            self.truth_values_array[item_nr] = 1
         else:
             print("Unexpected value in truth values array.")
         self.refresh()
