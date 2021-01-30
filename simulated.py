@@ -2,8 +2,9 @@ import random  # randomize state
 import copy
 import math
 
-ROUNDS_SINCE_CHANGE = 300
-ESCAPE_TEMPERATURE = 0.01
+ROUNDS_SINCE_CHANGE = 5000
+ESCAPE_TEMPERATURE = 0.001
+REWARD = 1.5
 
 
 # A class representing one of the states
@@ -17,6 +18,7 @@ class CNFState:
         self.truth_values_array[0] = -420
         self.of_instance = instance
         self.weight = -1
+        self.orig_weight = -1
 
         self.satisfied = False
         self.suspect_variables_set = set()
@@ -63,6 +65,12 @@ class CNFState:
             else:
                 print("Unexpected variable weight when refreshing.")
         self.weight = current_weight
+        self.orig_weight = self.weight # save weight before multiplication for printing
+        
+        # Multiply price by REWARD if state is satisfied
+        if self.satisfied:
+            self.weight = self.weight * REWARD
+            
         return True
 
     # Change one bit in state and refresh values
@@ -100,25 +108,40 @@ class CNFState:
 
     # Compare two states and decide, which one is better
     def is_better(self, challenger):
+        # Only compare weights (reward is given in refresh)
+        return self.weight >= challenger.weight
+
         # -- Both are solution
-        if challenger.satisfied and self.satisfied:
-            return self.weight > challenger.weight  # Better is the one with bigger weight
+        if (challenger.satisfied and self.satisfied):
+            # print(self.weight >= challenger.weight)
+            return self.weight >= challenger.weight  # Better is the one with bigger weight
         # -- None are solution
-        elif (not challenger.satisfied) and (not self.satisfied):
-            return self.weight > challenger.weight  # Better is the one with bigger weight
+        elif ((not challenger.satisfied) and (not self.satisfied)):
+            # print(self.weight >= challenger.weight)
+            return self.weight >= challenger.weight  # Better is the one with bigger weight
         # -- Only this one is solution
-        elif (not challenger.satisfied) and self.satisfied:
+        elif ((not challenger.satisfied) and self.satisfied):
+            #print(                "New (%d %r) is better than state (%d %r)" % (                self.weight, self.satisfied, challenger.weight, challenger.satisfied))
+            #print(True)
             return True  # Yes, this one is_better than challenger
+            # return self.weight >= challenger.weight  # Better is the one with bigger weight
         # -- Only challenger is solution
-        elif challenger.satisfied and (not self.satisfied):
+        elif (challenger.satisfied and (not self.satisfied)):
+            #print(                "New (%d %r) is better than state (%d %r)" % (                self.weight, self.satisfied, challenger.weight, challenger.satisfied))
+            #print(False)
             return False  # No, this one is NOT better than challenger
+            # return self.weight >= challenger.weight  # Better is the one with bigger weight
+        else:
+            print("Impossiburu!!!")
+            exit(1)
 
         return False
 
     def random_neighbour(self):
         new = copy.deepcopy(self)
         # If it is satisfied flip any random variable
-        if self.satisfied:
+        # if self.satisfied:
+        if True:  # Always pick random! CHANGE.
             to_flip = random.randrange(1, self.variables + 1)
             # print("Flipping %d" % to_flip)
             new.flip(to_flip)
@@ -272,6 +295,8 @@ def try_state(state, temperature):
     # Zvol náhodného souseda
     new = state.random_neighbour()
     # Přijmi jej, je li lepší
+    # print("New (%d %r) is better than state (%d %r)" % (new.weight, new.satisfied, state.weight, state.satisfied))
+    # print("-- new try state --")
     if new.is_better(state):
         # print("Better")
         return new, True
@@ -287,11 +312,12 @@ def try_state(state, temperature):
     return state, False
 
 
-def solve_sim(self, start_temperature, cooling_coefficient, output_chart_data_filename ):
+def solve_sim(self, start_temperature, cooling_coefficient, output_chart_data_filename):
     print("-- Simulated Cooling --")
 
     state = CNFState(self)
     state.random_start()
+    print("-- End of start --")
     best = CNFState(self)  # Empty state is the default state of CNFState
     temperature = start_temperature
     rounds_without_better_state = 0
@@ -311,7 +337,8 @@ def solve_sim(self, start_temperature, cooling_coefficient, output_chart_data_fi
             else:
                 rounds_since_new_state += 1
 
-            if state.is_better(best):
+            # if state.is_better(best):
+            if state.is_better(best) and state.satisfied:
                 best = copy.deepcopy(state)
                 rounds_without_better_state = 0
                 accepted += 1
@@ -322,7 +349,8 @@ def solve_sim(self, start_temperature, cooling_coefficient, output_chart_data_fi
             # Save evolution of weight for graphing purposes
             # print("%d" % (best.weight))
             # print("%d" % (state.weight))
-            f.write("%d\n" % (state.weight) )
+            #f.write("%d\n" % (state.weight))
+            f.write("%d\n" % (state.orig_weight))
 
         temperature = cool(temperature, cooling_coefficient)
         # print("Rounds without new better: %d" % (rounds_without_better_state))
@@ -330,8 +358,10 @@ def solve_sim(self, start_temperature, cooling_coefficient, output_chart_data_fi
     f.close()
     print("--- Finished ---")
     print(best)
-    self.best_weight = best.weight
+    #self.best_weight = best.weight
+    self.best_weight = best.orig_weight
     self.best_solution = best.truth_values_array
     self.solved = True
 
-    return best.weight
+    #return best.weight
+    return best.orig_weight

@@ -1,9 +1,9 @@
 clear all;
 
-graf = importdata('../calculated_sim/chart_16_2211.dat');
+graf = importdata('../calculated_sim/chart_31_0019.dat');
 width = 2;
 
-plot( 1:1:size(graf) , graf(:), 'LineWidth', width); hold on
+plot( 1:1:size(graf) , graf(:), 'LineWidth', width, 'color', [0.6350 0.0780 0.1840]); hold on
 
 
 % ----- ZKC -----
@@ -19,7 +19,7 @@ grid
 % subtitle('pro metodu větví a hranic')
 % legend('bab max', 'bab avg')
 
-legend('t=30, c=97')
+legend('t=50, c=99')
 
 ylabel('Váha')
 xlabel('Kroků')

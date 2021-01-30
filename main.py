@@ -16,6 +16,23 @@ def main():
     instances_array = load_instances_file(sys.argv[1])
     load_solution_file(sys.argv[3], instances_array)
 
+    # print("-- Checking issat working --")
+    # inst = instances_array[1]
+    # state = simulated.CNFState(inst)
+    # print(inst)
+    # print(state)
+    # state.flip(4)
+    # state.flip(7)
+    # state.flip(9)
+    # state.flip(10)
+    # state.flip(11)
+    # state.flip(13)
+    # state.flip(17)
+    # state.flip(20)
+    # print(state)
+    #
+    # exit(1)
+
     # inst = CNFInstance(1, 3)
     # inst.setWeight(0, -420)
     # inst.setWeight(1, 10)
@@ -60,11 +77,11 @@ def main():
     # exit(1)
 
     # Solve every instance
-    for i in range(0, 1):
+    for i in range(0, 500):
     # for i in range(0, len(instances_array)):
         now = datetime.datetime.now()
         start = time.process_time()
-        instances_array[i].solve_sim(30, 0.97,  sys.argv[2] + now.strftime("chart_%d_%H%M.dat") )
+        instances_array[i].solve_sim(50, 0.99,  sys.argv[2] + now.strftime("chart_%d_%H%M.dat") )
         end = time.process_time()
 
         # print("Elapsed time is %f" % (float(end-start)))
@@ -223,6 +240,7 @@ def save_solution_file(file_location, instances_array):
 
 
 # Save all info about complexity of calculated instances to a file
+# COMPLEXITY = ID  MY_SOLUTION  GIVEN_SOLUTION  ERROR  TIME
 def save_complexity_file(file_location, instances_array):
     f = open(file_location + "/complexity_%d.dat" % (instances_array[0].number_of_variables), "w")
     time_sum = 0
