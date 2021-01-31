@@ -65,12 +65,12 @@ class CNFState:
             else:
                 print("Unexpected variable weight when refreshing.")
         self.weight = current_weight
-        self.orig_weight = self.weight # save weight before multiplication for printing
-        
+        self.orig_weight = self.weight  # save weight before multiplication for printing
+
         # Multiply price by REWARD if state is satisfied
         if self.satisfied:
             self.weight = self.weight * REWARD
-            
+
         return True
 
     # Change one bit in state and refresh values
@@ -111,153 +111,42 @@ class CNFState:
         # Only compare weights (reward is given in refresh)
         return self.weight >= challenger.weight
 
-        # -- Both are solution
-        if (challenger.satisfied and self.satisfied):
-            # print(self.weight >= challenger.weight)
-            return self.weight >= challenger.weight  # Better is the one with bigger weight
-        # -- None are solution
-        elif ((not challenger.satisfied) and (not self.satisfied)):
-            # print(self.weight >= challenger.weight)
-            return self.weight >= challenger.weight  # Better is the one with bigger weight
-        # -- Only this one is solution
-        elif ((not challenger.satisfied) and self.satisfied):
-            #print(                "New (%d %r) is better than state (%d %r)" % (                self.weight, self.satisfied, challenger.weight, challenger.satisfied))
-            #print(True)
-            return True  # Yes, this one is_better than challenger
-            # return self.weight >= challenger.weight  # Better is the one with bigger weight
-        # -- Only challenger is solution
-        elif (challenger.satisfied and (not self.satisfied)):
-            #print(                "New (%d %r) is better than state (%d %r)" % (                self.weight, self.satisfied, challenger.weight, challenger.satisfied))
-            #print(False)
-            return False  # No, this one is NOT better than challenger
-            # return self.weight >= challenger.weight  # Better is the one with bigger weight
-        else:
-            print("Impossiburu!!!")
-            exit(1)
-
-        return False
+        # -- First implemetation, now obsolete --
+        # if (challenger.satisfied and self.satisfied):
+        #     return self.weight >= challenger.weight  # Better is the one with bigger weight
+        # # -- None are solution
+        # elif ((not challenger.satisfied) and (not self.satisfied)):
+        #     return self.weight >= challenger.weight  # Better is the one with bigger weight
+        # # -- Only this one is solution
+        # elif ((not challenger.satisfied) and self.satisfied):
+        #     return True  # Yes, this one is_better than challenger
+        # # -- Only challenger is solution
+        # elif (challenger.satisfied and (not self.satisfied)):
+        #     return False  # No, this one is NOT better than challenger
+        # return False
 
     def random_neighbour(self):
         new = copy.deepcopy(self)
+
+        # Always pick random! (NEW implemetation)
+        to_flip = random.randrange(1, self.variables + 1)
+        # print("Flipping %d" % to_flip)
+        new.flip(to_flip)
+
+        # -- First implemetation (change only variables in unsatisfied maxterms)
         # If it is satisfied flip any random variable
         # if self.satisfied:
-        if True:  # Always pick random! CHANGE.
-            to_flip = random.randrange(1, self.variables + 1)
-            # print("Flipping %d" % to_flip)
-            new.flip(to_flip)
-        # If it is not satisfied flip any variable from suspect_variables_set (variables in unsolved maxterms)
-        else:
-            # Convert set to list because od python set implementation
-            suspect_list = list(self.suspect_variables_set)
-            random.shuffle(suspect_list)
-            random_suspect_var = suspect_list.pop()
-            # print("Flipping suspect %d" % random_suspect_var)
-            new.flip(random_suspect_var)
+        #     to_flip = random.randrange(1, self.variables + 1)
+        #     new.flip(to_flip)
+        # # If it is not satisfied flip any variable from suspect_variables_set (variables in unsolved maxterms)
+        # else:
+        #     # Convert set to list because od python set implementation
+        #     suspect_list = list(self.suspect_variables_set)
+        #     random.shuffle(suspect_list)
+        #     random_suspect_var = suspect_list.pop()
+        #     new.flip(random_suspect_var)
 
         return new
-
-
-class KnapsackState:
-    def __init__(self, instance):
-        self.boxes = instance.current_things
-        self.combination_array = [0] * self.boxes  # Initially trivial
-        self.state_of_instance = copy.copy(instance)
-        self.value = 0
-        self.weight = 0
-
-    def is_solution(self):
-        if self.weight > self.state_of_instance.original_limit_weight:
-            return False
-        return True
-
-    def flip(self, item_nr):
-        # print("Flip %d" % (item_nr))
-
-        if self.combination_array[item_nr] == 0:
-            self.combination_array[item_nr] = 1
-            self.value += self.state_of_instance.things_array[item_nr].value
-            self.weight += self.state_of_instance.things_array[item_nr].weight
-            # print("Item 0 -> 1 ")
-            # print("Value: %d\n"
-            #      "New V: %d\n"
-            #      "Weight: %d\n"
-            #      "New:    %d" % (self.value, self.state_of_instance.things_array[item_nr].value,
-            #                      self.weight, self.state_of_instance.things_array[item_nr].weight))
-
-        elif self.combination_array[item_nr] == 1:
-            self.combination_array[item_nr] = 0
-            self.value -= self.state_of_instance.things_array[item_nr].value
-            self.weight -= self.state_of_instance.things_array[item_nr].weight
-            # print("Item 1 -> 0")
-            # print("Value: %d\n"
-            #      "New V: %d\n"
-            #      "Weight: %d\n"
-            #      "New:    %d" % (self.value, self.state_of_instance.things_array[item_nr].value,
-            #                      self.weight, self.state_of_instance.things_array[item_nr].weight))
-        else:
-            print("Could not flip thing in arra. Propably bad limits. Very bad.")
-
-        return
-
-    # Randomizes the state compltely
-    def randomize(self):
-        # For every thing in array flip a coin
-        for thing_nr in range(0, self.boxes):
-            if random.randint(0, 1):
-                self.flip(thing_nr)
-
-    # Generate random solution
-    def random_solution(self):
-        for i in range(0, self.boxes * 1000):
-            self.randomize()
-            if self.is_solution():
-                # print("Is a solution. :)")
-                return
-            # print("Not a solution. :(")
-
-        # I give up, lets go trivial
-        self.combination_array = [0] * self.boxes
-        self.value = 0
-        self.weight = 0
-        return
-
-    # For printing the state
-    def __str__(self):
-        return "--- State of instance nr.%d ---\n" \
-               "- Boxes:  %d\n" \
-               "- Array:  %s\n" \
-               "- Value:  %d\n" \
-               "- Weight: %d" % (self.state_of_instance.id, self.boxes, self.combination_array, self.value, self.weight)
-
-    def is_better(self, challanger):
-        if not challanger.is_solution():
-            return True
-        if self.value > challanger.value:
-            return True
-        return False
-
-    def random_neighbour_solution(self):
-        a = list(range(0, self.boxes))
-        # print(a)
-        random.shuffle(a)
-        # print(a)
-
-        original = copy.deepcopy(self)
-        # print(original)
-
-        for i in a:
-            new = copy.deepcopy(original)
-            new.flip(i)
-            # print(new)
-            # new.flip(random.randint(0, self.boxes-1))
-            if new.is_solution():
-                # print("Accept as a solution neighbour.")
-                return new
-            # print("Reject as a solution neighbour.")
-
-        print("Something went terribly bad! This should never happen.\n"
-              "Solution has no neighbours which are solutions. WTF?")
-        exit(1)
 
 
 def cool(temperature, a):
@@ -296,14 +185,12 @@ def try_state(state, temperature):
     new = state.random_neighbour()
     # Přijmi jej, je li lepší
     # print("New (%d %r) is better than state (%d %r)" % (new.weight, new.satisfied, state.weight, state.satisfied))
-    # print("-- new try state --")
     if new.is_better(state):
         # print("Better")
         return new, True
 
     # Jinak jej přijmi s převědpodobností závislou na zhoršení
     sigma = float(normalized_value_diff(state, new))
-    # print(math.exp(-sigma / temperature))
     if (random.random() < math.exp(-sigma / temperature)):
         # print("Beneveolent")
         return new, True
@@ -349,19 +236,18 @@ def solve_sim(self, start_temperature, cooling_coefficient, output_chart_data_fi
             # Save evolution of weight for graphing purposes
             # print("%d" % (best.weight))
             # print("%d" % (state.weight))
-            #f.write("%d\n" % (state.weight))
+            # f.write("%d\n" % (state.weight))
             f.write("%d\n" % (state.orig_weight))
 
         temperature = cool(temperature, cooling_coefficient)
-        # print("Rounds without new better: %d" % (rounds_without_better_state))
 
     f.close()
     print("--- Finished ---")
     print(best)
-    #self.best_weight = best.weight
+    # self.best_weight = best.weight
     self.best_weight = best.orig_weight
     self.best_solution = best.truth_values_array
     self.solved = True
 
-    #return best.weight
+    # return best.weight
     return best.orig_weight

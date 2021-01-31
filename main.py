@@ -16,69 +16,9 @@ def main():
     instances_array = load_instances_file(sys.argv[1])
     load_solution_file(sys.argv[3], instances_array)
 
-    # print("-- Checking issat working --")
-    # inst = instances_array[1]
-    # state = simulated.CNFState(inst)
-    # print(inst)
-    # print(state)
-    # state.flip(4)
-    # state.flip(7)
-    # state.flip(9)
-    # state.flip(10)
-    # state.flip(11)
-    # state.flip(13)
-    # state.flip(17)
-    # state.flip(20)
-    # print(state)
-    #
-    # exit(1)
-
-    # inst = CNFInstance(1, 3)
-    # inst.setWeight(0, -420)
-    # inst.setWeight(1, 10)
-    # inst.setWeight(2, 20)
-    # inst.setWeight(3, 30)
-    # m1 = Maxterm(3)
-    # m1.set(-1)
-    # m1.set(2)
-    # inst.addMaxterm(m1)
-    # m2 = Maxterm(3)
-    # m2.set(-2)
-    # m2.set(-3)
-    # inst.addMaxterm(m2)
-    # m3 = Maxterm(3)
-    # m3.set(-3)
-    # inst.addMaxterm(m3)
-    # # print(inst)
-    #
-    # state1 = simulated.CNFState(inst)
-    # state1.truth_values_array[1] = 0
-    # state1.truth_values_array[2] = 0
-    # state1.truth_values_array[3] = 1
-    # state1.refresh()
-    #
-    # state2 = simulated.CNFState(inst)
-    # state2.truth_values_array[1] = 0
-    # state2.truth_values_array[2] = 0
-    # state2.truth_values_array[3] = 0
-    # state2.refresh()
-    # state2.randomize()
-    #
-    # print(state1)
-    # # print(state2)
-    # print(state1.is_better(state2))
-    # state3 = state1.random_neighbour()
-    # print(state3)
-
-
-
-
-    # suspicious_var = suspicious_var.union(n.getVars())
-    # exit(1)
-
     # Solve every instance
-    for i in range(0, 1):
-    # for i in range(0, len(instances_array)):
+    # for i in range(0, len(instances_array)): # Solve by the lenth
+    for i in range(0, 1):  # Solve specific instances
         now = datetime.datetime.now()
         start = time.process_time()
         instances_array[i].solve_sim(50, 0.99,  sys.argv[2] + now.strftime("chart_%d_%H%M.dat") )
