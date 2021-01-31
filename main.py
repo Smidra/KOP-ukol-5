@@ -77,7 +77,7 @@ def main():
     # exit(1)
 
     # Solve every instance
-    for i in range(0, 500):
+    for i in range(0, 1):
     # for i in range(0, len(instances_array)):
         now = datetime.datetime.now()
         start = time.process_time()

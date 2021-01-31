@@ -70,6 +70,16 @@ Aby nehrály roli jednotky ve kterých je váha uvedena (koruny/haléře), tak j
 \secc Ukončení
 Funkce frozen vrátí True po 300 kolech beze změny. Funkce equilibrium vrátí True po dvojnásobku počtu věcí v instanci.
 
+\secc Bonus
+Třída CNFState obsahuje pole libovolného množství objektů třídy Maxterm. Všechny metody její metody volají metody této třídy, když s maxtermy operují. Třída maxterm obsahuje pole pravdivostních hodnot:
+
+\begitems
+* 0 -- Tuto proměnnou maxterm neobsahuje
+* -1 -- Tuto proměnnou maxterm obsahuje v negaci
+* 1 -- Tuto proměnnou maxterm obsahuje a není v negaci
+\enditems
+
+Při dotazu na splnitelnost iteruje metoda přes toto pole. Tedy maxtermy mohou obsahovat libovolné množství proměnných. Více proměnných funguje včetně načítání ze souboru, které přestane stavět maxterm až při přečtení nuly dle specifikace.
 
 \vfill\break
 \sec Experimentace
@@ -210,7 +220,7 @@ Chyba&0\%&0\%\cr
 Čas&70.2s&58.2s\cr
 }}\bigskip
 
-Heuristika vykazuje skvělé výsledky v přijatelném čase. Nechám ji pracovat přes noc. Za osm hodin je schopna stihnout kolem pěti set instancí.
+Heuristika vykazuje skvělé výsledky v přijatelném čase. Nechám ji pracovat přes noc. Za osm hodin je schopna stihnout kolem čtyř set instancí.
 
 %Barvu grafu jsem pozměnil abych naznačil, že se jedná o zásadní změnu v přístupu vykreslování. Ustálení je stále spíše na konci. Optimálně by mělo být ve středu až ve dvou třetinách. Toho by jistě šlo dosáhnout zvýšením požadovaných kol beze změny. Pokud ale zvýším intenzifikaci mohl bych se vyhnout prodloužení času výpočtu. Změním tedy ochlazovací koeficient na 0.94.
 
@@ -232,72 +242,33 @@ Heuristika vykazuje skvělé výsledky v přijatelném čase. Nechám ji pracova
 %}}\bigskip
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\vfill\break
+% \vfill\break
 % Přehledná prezentace výsledků
 \sec Zhodnocení experimentů
 % Graf čas + chybovost
 % Graf postupného vývoje ceny
 
-
-Zkusíme běh na 100 instancích o velikosti 32. Hodnoty srovnáme s dodaným referenčním řešením.
-
-\bigskip
-\centerline{\table{r|r|r}{
-{\bf 2/0.97}&MAX&AVG\crl
-Chyba&70.9\%&7.9\%\cr
-Čas&2.91s&1.32s\cr
-}}\bigskip
-
-
-Ukazuje se, že čas je sice skvělý a průměrná chybovost také. Bohužel je ale maximální chyba opravdu příliš vysoko. Vraťme se tedy zpět k ladění parametrů. Pro zvýšení přesnosti na úkor času zvedneme původní teplotu na $t=5$. Celkové hodnoty po testování na 100 instancí se změnily na:
+Experiment doběhl po šesti hodinách, tedy rychlost předčila očekávání. Celkové výsledky pro prvních čtyři sta instancí jsem shrnul do tabulky níže. 
 
 \bigskip
 \centerline{\table{r|r|r}{
-{\bf 5/0.97}&MAX&AVG\crl
-Chyba& 51.4\%& 2.7\%\cr
-Čas  & 8.7s& 3.0s\cr
+{\bf 50/0.99}&MAX&AVG\crl
+Chyba&44.1\%&0.2\%\cr
+Čas&81.5s&53.2s\cr
 }}\bigskip
 
-To je bohužel stále moc veliká chybovost. Zkusme se podívat i na jiné parametry. Je možné, že mám příliš rychlou ukončovancí podmínku. Tedy, že se tavenina příliš rychle prohlásí za zmraženou. Místo třiceti kol bez žádné změny toto číslo rapidně zvednu na 300. Abych dosahoval výrazně lepší chybovosti razantně také zvednu teplotu na $t=30$.
+Čas se poměrně stabilně drží kolem minuty. Vyníkajcí je i průměrná chybovost, pouhých 0.2\%. Znepokojující je pouze vysoká maximální chyba. Po bližším prozkoumání se potvrdí doměnka vycházející z nízké průměrné chyby -- jedná se o ojedinělou hodnotu. Jedninečná hodnota byla pravděpodobně způsobena hraniční hodntou.
 
-% Obrázek graf09.pdf
-%\centerline{ \picwidth=17cm \inspic{graf19.pdf} }
-%\caption/f Vývoj ceny stavu pro osmý experiment.
-%\bigskip
-
-Vypadá to, že jsme nalezli chybu. Heuristika se úspěšně usadila v nejlepším stavu. Přitom kroků bylo ještě přijatelné množství. Přejdeme tedy s touto nejnovější iterací parametrů zpátky do black--box testingu. Pustím heuristiku zase na 100 instancí a zaznamenám vlastnosti řešení.
+Veliká chyba se vyskytla u instance 339, kde podala výsledek 3995 místo dalého 7149. Po zkontrolování výsledku v řešení, ale zjišťuji, že je výsledek správně. Řešení 7149 patří instanci 340, která byla ze souboru později vypuštěna\fnote{https://moodle-vyuka.cvut.cz/mod/assign/view.php?id=89703}. Python tedy ze souboru chybně přečetl správné řešení a vypočítal tak špatnou chybu instance. Po opravení chyby a důsledném překontrolování jsou výsledky následující.
 
 \bigskip
 \centerline{\table{r|r|r}{
-{\bf 30/0.97}&MAX&AVG\crl
-Chyba& 5.5\%& 0.6\%\cr
-Čas  &  21.8s& 9.6s\cr
+{\bf 50/0.99}&MAX&AVG\crl
+Chyba&9.39\%&0.09\%\cr
+Čas&81.5s&53.2s\cr
 }}\bigskip
 
-\hfill $\epsilon\upsilon\rho\eta\kappa\alpha$!
-
-Řešení je nyní velmi uspokojivé, přijmeme ho a experimentaci ukončíme.
-
-
-
-
-
-
-
+Takové výsledky ukazují, že heuristika vrací poměrně kvalitní výsledky pro tyto instance.
 
 
 % Interpretace výsledků
