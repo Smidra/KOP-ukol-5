@@ -18,7 +18,7 @@ Na výběr bylo z:
 * Tabu search
 \enditems
 
-Po úspěšném nasazení algoritmu bylo za úkol jeho vlastnosti ověřit experimentálním vyhodnocením. Zpráva by měla dokládat záznam o celém postupu řešení problému a nsazení. Proces experimentace (white box i black box fáze testování) jsem se pokusil zachytit v tomto dokumentu. Výsledné naměřené hodnoty pak prezentovat a pokusit se o interpretaci\fnote{https://moodle-vyuka.cvut.cz/mod/assign/view.php?id=89703}.
+Po úspěšném nasazení algoritmu bylo za úkol jeho vlastnosti ověřit experimentálním vyhodnocením. Zpráva by měla dokládat záznam o celém postupu řešení problému a nasazení. Proces experimentace (white box i black box fáze testování) jsem zachytil v tomto dokumentu. Výsledné naměřené hodnoty pak prezentovat a pokusit se o interpretaci\fnote{https://moodle-vyuka.cvut.cz/mod/assign/view.php?id=89703}.
 
 
 % Co je to simulované ochlazování
@@ -36,7 +36,7 @@ Má metody:
 * refresh() -- Zavolá is\_solution() aby vystavěl aktuální množinu podezřelých proměnných. Pak spočítá celkovou váhu pro toto konkrétní ohodnocení.
 * flip( n ) -- Proměnnou na pozici $n$ invertuje (0 na 1, nebo 1 na 0)
 * randomize() -- Ohodnotí proměnné náhodně a zavolá metodu refresh().
-* random\_start() -- Pokusí se oprakovaným voláním metody randomize() nalézt platné řešení. Pokud ho po n krát 1000 krocích nenalezne, spokojí se s jakýmkoliv náhodným stavem.
+* random\_start() -- Pokusí se opakovaným voláním metody randomize() nalézt platné řešení. Pokud ho po n krát 1000 krocích nenalezne, spokojí se s jakýmkoliv náhodným stavem.
 * is\_better( state\_challenger ) -- Porovná, jestli tento stav lepší než challenger stav. (Více \ref[better].)
 * random\_neighbour() -- Vrátí náhodný sousední stav. (Více \ref[random].)
 \enditems
@@ -51,13 +51,13 @@ Tato funkce se použije při hledání startovacího stavu. V cyklu randomizuje 
 Zvolené operace jsou změna jednoho bitu. Tedy buď změna ohodnocení proměnné z 1 na 0, nebo naopak. Tato operace je implementována metodou flip(). Po změně je vždy volána metoda refresh(), která atributy objektu aktualizuje.
 
 \label[better]\secc is\_better(state\_challenger)
-Metoda, která rozhodne, jestli je lepší tento stav, nebo vyzivatel. Po dlouhé úvaze jsem se rozhodl tuto metodu ponechat implementovanou obdobně jako v úloze 4. Existují čtyři možnosti, které mohou nastat.
+Metoda, která rozhodne, jestli je lepší tento stav, nebo vyzyvatel. Po dlouhé úvaze jsem se rozhodl tuto metodu ponechat implementovanou obdobně jako v úloze 4. Existují čtyři možnosti, které mohou nastat.
 
 \begitems
-* Tento (je řešení) x Vyzivatel (je řešení) -- Rozhodne lepší váha.
-* Tento (není řešení) x Vyzivatel (není řešení) -- Rozhodne lepší váha.
-* Tento (není řešení) x Vyzivatel (je řešení) -- Tento je lepší.
-* Tento (je řešení) x Vyzivatel (není řešení) -- Vyzivatel je lepší.
+* Tento (je řešení) x Vyzyvatel (je řešení) -- Rozhodne lepší váha.
+* Tento (není řešení) x Vyzyvatel (není řešení) -- Rozhodne lepší váha.
+* Tento (není řešení) x Vyzyvatel (je řešení) -- Vyzyvatel je lepší.
+* Tento (je řešení) x Vyzyvatel (není řešení) -- Tento je lepší.
 \enditems
 
 \label[random]\secc random\_neighbour()
@@ -71,7 +71,7 @@ Aby nehrály roli jednotky ve kterých je váha uvedena (koruny/haléře), tak j
 Funkce frozen vrátí True po 300 kolech beze změny. Funkce equilibrium vrátí True po dvojnásobku počtu věcí v instanci.
 
 \secc Bonus
-Třída CNFState obsahuje pole libovolného množství objektů třídy Maxterm. Všechny metody její metody volají metody této třídy, když s maxtermy operují. Třída maxterm obsahuje pole pravdivostních hodnot:
+Třída CNFState obsahuje pole libovolného množství objektů třídy Maxterm. Všechny její metody volají metody této třídy, když s maxtermy operují. Třída maxterm obsahuje pole pravdivostních hodnot:
 
 \begitems
 * 0 -- Tuto proměnnou maxterm neobsahuje
@@ -79,13 +79,13 @@ Třída CNFState obsahuje pole libovolného množství objektů třídy Maxterm.
 * 1 -- Tuto proměnnou maxterm obsahuje a není v negaci
 \enditems
 
-Při dotazu na splnitelnost iteruje metoda přes toto pole. Tedy maxtermy mohou obsahovat libovolné množství proměnných. Více proměnných funguje včetně načítání ze souboru, které přestane stavět maxterm až při přečtení nuly dle specifikace.
+Při dotazu na splnitelnost iteruje metoda přes toto pole. Tedy maxtermy mohou obsahovat libovolné množství proměnných. CNF obsahující více proměnných funguje včetně načítání ze souboru. To přestane stavět maxterm až při přečtení nuly dle specifikace.
 
 \vfill\break
 \sec Experimentace
 Proces experimentace jsem si téměř celý automatizoval. Program generuje do souboru {\bf chart\_X\_YZ.dat} vývoj váhy, přímo zatímco ji počítá. GNU Octave tento soubor čte a na požádání z něj rovnou vytvoří graf vývoje váhy v krocích.
 
-Používám dodané instance {\bf wuf20-78-M1} o velikosti dvaceti proměnných a sedmdesáti osmi maxtermy. Prvotní nastavení parametrů by mohlo být náhodné, ale rozhodl jsem se pro výsledné hodnoty čtvrtého úkolu. Tedy  $t = 30$ a $c = 0.97$. V první fázi se pokusím vyladit algoritmus na instanci problému s $id=01$.
+Používám dodané instance {\bf wuf20-78-M1} o velikosti dvaceti proměnných a se sedmdesáti osmi maxtermy. Prvotní nastavení parametrů by mohlo být náhodné, ale rozhodl jsem se pro výsledné hodnoty čtvrtého úkolu. Tedy  $t = 30$ a $c = 0.97$. V první fázi se pokusím vyladit algoritmus na instanci problému s $id=01$.
 
 Sleduji vývoj ceny v grafu níže. Algoritmus došel k řešení 6403, což je správné řešení první instance. Graf vypadá tak, jak by měl -- konverguje v polovině až dvou třetinách.
 
@@ -99,13 +99,13 @@ Všechno sice vypadá ideálně hned na první pokus, ale po bližším prozkoum
 
 Nejprve se pokusím opravit druhý problém. Prohlédnu metodu is\_better(), ale ta vrátí \uv{True} pouze pokud je stav ostře lepší. Domněnka -1 erroru při porovnání tedy platit nebude. Půjde tedy pravděpodobně o rozhodnutí heuristiky zkusit přijmout i horší stav. To by mělo jít změnit úpravou parametrů.
 
-První problém je záludnější. Intuitivně bych pomohl heuristice držet se u řešení tak, že bych ho více odměnil. Jenže ve stávající implementaci řešení vždy vítězí nad neřešením. Nelze mu tedy více přidat. Je, ale možné, že algoritmus mate chytře implementovaný výběr souseda. Možná způsobil přesný opak zamýšleného a místo rovnoměrného procházení prostorem pomale dojde k řešení a rychle ho zničí. Změním tedy implementaci. Nyní nebere proměnné v nesplněných maxtermech v úvahu.
+První problém je záludnější. Intuitivně bych pomohl heuristice držet se u řešení tak, že bych ho více odměnil. Jenže ve stávající implementaci řešení vždy vítězí nad neřešením. Nelze mu tedy více přidat. Je, ale možné, že algoritmus mate chytře implementovaný výběr souseda. Možná způsobil přesný opak zamýšleného a místo rovnoměrného procházení prostorem pomalu dojde k řešení a rychle ho zničí. Změním tedy implementaci. Nyní nebere proměnné v nesplněných maxtermech v úvahu.
 
 \centerline{ \picwidth=15cm \inspic{chart02.pdf} }
 \caption/f Vývoj ceny stavu pro druhý experiment.
 \bigskip
 
-Běh programu opět odhalil správné řešení problému. Bohužel opět vykazuje stejné chyby jako předchozí. Tedy to nevypadá, že by něco razantně měnilo. Z grafu je navíc vidět, jak heuristice mna počátku běhu delší dobu trvá než začně k řešení konvergovat. To by mohlo odpovídat změně v kódu -- cesta k řešení je těžší. Jenže změna naváděla na jakékoliv řešení, nehledě na váhu. Mohl bych tento problém ověřovat empiricky, ale v této fázi to nevypadá, že by změna měla nějaký pozitivní efekt vedoucí k vyřešení stanovených problémů. I přesto změnu zatím v kódu nechám, protože je tak průchod symetričtější.
+Běh programu opět odhalil správné řešení problému. Bohužel opět vykazuje stejné chyby jako předchozí. Tedy to nevypadá, že by něco razantně měnilo. Z grafu je navíc vidět, jak heuristice na počátku běhu delší dobu trvá než začně k řešení konvergovat. To by mohlo odpovídat změně v kódu -- cesta k řešení je těžší. Jenže změna naváděla na jakékoliv řešení, nehledě na váhu. Mohl bych tento problém ověřovat empiricky, ale v této fázi to nevypadá, že by změna měla nějaký pozitivní efekt vedoucí k vyřešení stanovených problémů. I přesto změnu zatím v kódu nechám, protože je tak průchod symetričtější.
 
 Další možností, proč se program ukončí ve špatném stavu je příliš veliká diverzifikace. Pokusím se jí snížit snížením počáteční teploty ze třiceti na patnáct.
 
@@ -115,7 +115,7 @@ Další možností, proč se program ukončí ve špatném stavu je příliš ve
 
 Viditelně se zvětšila intezifikace, zmenšil se počet kroků, ale oba problémy stále přetrvávají. Nezbývá, než se pokusit zvýšit intenzifikaci, tentokrát snížením chladícího koeficientu (chlazení bude rychlejší). Změním chladící koeficient z původních 0.97 na 0.92.
 
-\centerline{ \picwidth=15cm \inspic{chart04.pdf} }
+\centerline{ \picwidth=14cm \inspic{chart04.pdf} }
 \caption/f Vývoj ceny stavu pro čtvrtý experiment.
 \bigskip
 
@@ -123,18 +123,17 @@ Sice se mi podařilo téměř trojnásobně zmenšit počet kroků při hledán�
 
 Další možnost jak opravit, že se výpočet ukončí na příliš nízké teplotě a ne na stabilní hodnotě je zkrátka snížit definici \uv{příliš nízké teploty}. Pustím tedy běh s původními hodnotami teplota 30 a chladící koeficient 0.97. Nyní ale desetkrát zmenším escape temperature na 0.001.
 
-\centerline{ \picwidth=15cm \inspic{chart05.pdf} }
+\centerline{ \picwidth=14cm \inspic{chart05.pdf} }
 \caption/f Vývoj ceny stavu pro pátý experiment.
 \bigskip
 
-To úspěšně vyřešilo problém předčasného ukončení. Teplota se nyní úspěšně stabilizuje na hodnotě 6520 po tři sta kroků, než se heuristika ukončí. Problémem stále zůstává, že to není optimální řešení.
+To vyřešilo problém předčasného ukončení. Teplota se nyní úspěšně stabilizuje na hodnotě 6520 po tři sta kroků, než se heuristika ukončí. Problémem stále zůstává, že to není optimální řešení.
 
 Zatím vždy průchodem algoritmus řešení nalezl. Pokud se ale vývoj váhy neustálí na správné hodnotě, řešení nalezl \uv{cestou}. Vyzkouším, jestli ochlazování stejně stabilně nalezne řešení i pro druhou instanci. Pustím tedy algoritmus bez dalších úprav na druhou instanci.
 
 \centerline{ \picwidth=15cm \inspic{chart06.pdf} }
 \caption/f Vývoj ceny stavu pro šestý experiment (druhá instance).
 \bigskip
-\vfill\break
 
 Algoritmus se ustálil na hodnotě 5198 po tři sta kol a ukončil se. Jako nejlepší řešení předložil váhu~4118. To není nejlepší řešení. Jinak vývoj váhy a čas vypadá obdobně předchozím grafům. Zkusím špatný výsledek zreplikovat opakovaným během algoritmu.
 
@@ -150,6 +149,8 @@ Algoritmus se ustálil na hodnotě 5198 po tři sta kol a ukončil se. Jako nejl
 }}\bigskip
 
 Čas i vývoj zůstávají nezměnené, ale ukazuje se, že algoritmus velmi chybuje. Stabilně správný výsledek byl tedy pravděpodobně důsledekm specifické konfigurace první instance. Doplním si tedy program o výpis vždy při porovnání stavů. Po bližším prozkoumání ale neodhalím žádnou chybu v implementaci metody is\_better(). Vrátím se tedy k úpravě hodnot. Pokud heuristika nenechází správné řešení, musím jí více diverzifikovat. Tedy výrazným zvýšením počáteční teploty ze 30 na 100 a chladícího koeficientu z 0.97 na 0.99.
+
+\vfill\break
 
 \centerline{ \picwidth=15cm \inspic{chart07.pdf} }
 \caption/f Vývoj ceny stavu pro sedmý experiment (druhá instance).
@@ -168,27 +169,30 @@ To vyprodukovalo správné řešení 4747, i když ve dvakrát až třikrát hor
 6&4747&ANO\cr
 }}\bigskip
 
-Došlo k výraznému zlepšení. Heuristika už ve většině případů našla správné řešení. Stále se na něm, ale neustálila. Stav ke kterému heuristika i přes všechny dosavadní snahy dokonverguje je přijetí všech proměnných čímž dosáhne sice nejvyšší ceny, ale nesplní požadavek splnitelnosti. Odměna za nalezení platného stavu už je maximální možná. Odměnu ale implementuje metoda is\_better(). Přeprogramuji zmíněnou část tak, aby váha splněného stavu byla násobena konstantou REWARD přímo při přepočítání pomocí metody refresh(). Metoday is\_better() pak bude pouze srovnávat váhy. Jako násobek REWARD zvolím náhodně vybranou hodnotu 2.
+Došlo k výraznému zlepšení. Heuristika už ve většině případů našla správné řešení. Stále se na něm, ale neustálila. Stav ke kterému heuristika i přes všechny dosavadní snahy dokonverguje je přijetí všech proměnných čímž dosáhne sice nejvyšší ceny, ale nesplní požadavek splnitelnosti. Odměna za nalezení platného stavu už je maximální možná. Odměnu ale implementuje metoda is\_better(). Přeprogramuji zmíněnou část tak, aby váha splněného stavu byla násobena konstantou REWARD přímo při přepočítání pomocí metody refresh(). Metoda is\_better() pak bude pouze srovnávat váhy. Tím budu moci vyzkoušet upravit odměnu a eliminuji případné chyby v implementaci. Jako násobek REWARD zvolím náhodně vybranou hodnotu 2.
 
-\centerline{ \picwidth=15cm \inspic{chart08.pdf} }
+\vfill\break
+\centerline{ \picwidth=14cm \inspic{chart08.pdf} }
 \caption/f Vývoj ceny stavu pro osmý experiment (druhá instance).
 \bigskip
 
 Graf jsem se rozhodl kvůli zásadní změně v kódu obarvit jinou barvou. Výsledek ukazuje výrazně jiný postup, než všechny ostatní grafy. Zásadní posun je ale v tom, že se ochlazování ustálí na optimální hodnotě. Stavy které jsou násobeny koeficientem REWARD jsou zřetelné ve skocích. Z konce grafu je zřejmé, že heuristika neměla dostatek času se ustálit ve správném řešení. Počet kol beze změny tedy zvednu na desetinásobek (3000).
 
-\centerline{ \picwidth=15cm \inspic{chart09.pdf} }
+\centerline{ \picwidth=14cm \inspic{chart09.pdf} }
 \caption/f Vývoj ceny stavu pro devátý experiment (druhá instance).
 \bigskip
 
-Změna se projevila přesně podle očekávání. Graf se v posledních krocích ustálil na delší dobu a to na správné optimální hodnotě řešení. Tím jsem překonal druhý z problémů. Heuristika dovává REWARD-násobek řešení. Náhlý skok uprostřed vývoje, může způsobit uvíznutí v lokálním extrému. Zmenším tedy koeficient REWARD, abych alespoň částečně propojil části grafu před a po skoku. REWARD bude v dalším běhu 1.5.
+Změna se projevila přesně podle očekávání. Graf se v posledních krocích ustálil na delší dobu a to na správné optimální hodnotě řešení. Tím jsem překonal druhý z problémů.
 
-\centerline{ \picwidth=15cm \inspic{chart10.pdf} }
+Heuristika dovává REWARD-násobek řešení. Náhlý skok uprostřed vývoje, může způsobit uvíznutí v lokálním extrému. Zmenším tedy koeficient REWARD, abych alespoň částečně propojil části grafu před a po skoku. REWARD bude v dalším běhu 1.5.
+
+\centerline{ \picwidth=14cm \inspic{chart10.pdf} }
 \caption/f Vývoj ceny stavu pro desátý experiment (druhá instance).
 \bigskip
 
-Graf opět nalezl správné řešení, ale problém skoku přetrvává. Po zamyšlení, ale shledávám chybný graf, ne výpočet. Graf totiž pomocí jedné křivky vykresluje dvě rozdílné hodnoty. Váhu a REWARD-násobek váhy. To způsobuje skok. Násobenou výhu tedy využiji pouze k vnitřnímu fungování algoritmu. Do grafu zaznamenám váhu před násobením. Po přepsání části kódu vypisující váhu v kroku spustím ochlazování se stejnými parametry.
+Graf opět nalezl správné řešení, ale problém velkého skoku přetrvává. Po zamyšlení, ale shledávám chybným graf, nikoliv výpočet. Graf totiž pomocí jedné křivky vykresluje dvě rozdílné hodnoty. Váhu a REWARD-násobek váhy. To způsobuje skok. Násobenou váhu tedy využiji pouze k vnitřnímu fungování algoritmu. Do grafu zaznamenám váhu před násobením. Po přepsání části kódu vypisující váhu v kroku spustím ochlazování se stejnými parametry.
 
-\centerline{ \picwidth=15cm \inspic{chart11.pdf} }
+\centerline{ \picwidth=14cm \inspic{chart11.pdf} }
 \caption/f Vývoj ceny stavu pro jedenáctý experiment (druhá instance).
 \bigskip
 
@@ -198,7 +202,7 @@ Barvu grafu jsem pozměnil abych naznačil, že se jedná o zásadní změnu v p
 \caption/f Vývoj ceny stavu pro dvanáctý experiment (druhá instance).
 \bigskip
 
-S grafem jsem již poměrně spokojen. Než přejdu do fáze black-box testování pustím heuristiku vícekrát za sebou abych odchytil případně velmi chybující nastavení.
+S grafem jsem již poměrně spokojen. Než přejdu do fáze black-box testování pustím heuristiku vícekrát za sebou abych odchytil případné velmi chybující nastavení.
 
 \bigskip
 \centerline{\table{r|r|l}{
@@ -220,29 +224,9 @@ Chyba&0\%&0\%\cr
 Čas&70.2s&58.2s\cr
 }}\bigskip
 
-Heuristika vykazuje skvělé výsledky v přijatelném čase. Nechám ji pracovat přes noc. Za osm hodin je schopna stihnout kolem čtyř set instancí.
+Heuristika vykazuje skvělé výsledky v přijatelném čase. Nechám ji pracovat přes noc. Za osm hodin je schopna stihnout kolem čtyř set instancí. Nechám ji tedy počítat prvních čtyři sta zadaných.
 
-%Barvu grafu jsem pozměnil abych naznačil, že se jedná o zásadní změnu v přístupu vykreslování. Ustálení je stále spíše na konci. Optimálně by mělo být ve středu až ve dvou třetinách. Toho by jistě šlo dosáhnout zvýšením požadovaných kol beze změny. Pokud ale zvýším intenzifikaci mohl bych se vyhnout prodloužení času výpočtu. Změním tedy ochlazovací koeficient na 0.94.
-
-%\centerline{ \picwidth=15cm \inspic{chart12.pdf} }
-%\caption/f Vývoj ceny stavu pro dvanáctý experiment (druhá instance).
-%\bigskip
-
-%Počet kroků se výrazně zkrátil. Podle grafu to ale vypadá, že byl ochlazovací koeficient zvolen příliš nízko. Mírně ho tedy zvednu na 0.97.
-
-%\centerline{ \picwidth=15cm \inspic{chart13.pdf} }
-%\caption/f Vývoj ceny stavu pro třináctý experiment (druhá instance).
-%\bigskip
-
-%Spustím algoritmus několikrát. Pokud bude často chybovat, je veliká šance, že se to projeví.
-
-%\centerline{\table{r|l}{
-%Běh&Chyba\crl
-%1.&0\cr
-%}}\bigskip
-
-
-% \vfill\break
+\vfill\break
 % Přehledná prezentace výsledků
 \sec Zhodnocení experimentů
 % Graf čas + chybovost
@@ -257,9 +241,9 @@ Chyba&44.1\%&0.2\%\cr
 Čas&81.5s&53.2s\cr
 }}\bigskip
 
-Čas se poměrně stabilně drží kolem minuty. Vyníkajcí je i průměrná chybovost, pouhých 0.2\%. Znepokojující je pouze vysoká maximální chyba. Po bližším prozkoumání se potvrdí doměnka vycházející z nízké průměrné chyby -- jedná se o ojedinělou hodnotu. Jedninečná hodnota byla pravděpodobně způsobena hraniční hodntou.
+Čas se poměrně stabilně drží kolem minuty. Vyníkajcí je i průměrná chybovost, pouhých 0.2\%. Znepokojující je pouze vysoká maximální chyba. Po bližším prozkoumání se potvrdí doměnka vycházející z nízké průměrné chyby -- jedná se o ojedinělou hodnotu. Jedninečná hodnota byla pravděpodobně způsobena hraniční hodntou. Přesto instanci dále prověřím.
 
-Veliká chyba se vyskytla u instance 339, kde podala výsledek 3995 místo dalého 7149. Po zkontrolování výsledku v řešení, ale zjišťuji, že je výsledek správně. Řešení 7149 patří instanci 340, která byla ze souboru později vypuštěna\fnote{https://moodle-vyuka.cvut.cz/mod/assign/view.php?id=89703}. Python tedy ze souboru chybně přečetl správné řešení a vypočítal tak špatnou chybu instance. Po opravení chyby a důsledném překontrolování jsou výsledky následující.
+Veliká chyba se vyskytla u instance 339, kde podala výsledek 3995 místo dalého 7149. Po zkontrolování výsledku v řešení, ale zjišťuji, že je výsledek 3995 správně. Řešení 7149 patří instanci 340, která byla ze souboru později vypuštěna\fnote{https://moodle-vyuka.cvut.cz/mod/assign/view.php?id=89703}. Python tedy ze souboru chybně přečetl správné řešení a vypočítal tak špatnou chybu instance. Po opravení a důsledném překontrolování jsou výsledky následující.
 
 \bigskip
 \centerline{\table{r|r|r}{
@@ -273,9 +257,7 @@ Takové výsledky ukazují, že heuristika vrací poměrně kvalitní výsledky 
 
 % Interpretace výsledků
 \sec Závěr
-V domácím úkolu jsem implementoval simulované ochlazování a pokusil se metodickým přístupem nalézt nejlepší parametry pro zadané NK--32 instance. Herustika velmi citlivě ragovala na změnu všech parametrů. Nejenom ale na dva hlavní (počáteční teplotu a ochlazovací koeficient). Je také zásadní mít korektně nastavené hodnoty ukončování pro metodu frozen. Zyšování počáteční teploty a chladícího koeficientu pomalu vylaďujeme intezifikaci a diverzifikaci heuristiky pro náš algoritmus. Vyzkoušel jsem si práci s pokročilou heuristikou a upravil svůj program na automatizaci úkonů spojených s vizualizací od pythonu až po matlab grafy. 
-
-
+V domácím úkolu jsem implementoval simulované ochlazování a pokusil se metodickým přístupem nalézt nejlepší parametry pro zadané 20--78 vážené instance. Postupně se mi podařilo odstranit všechny identifikované chyby v jejím fungování. Heuristika při šestihodinovém black box testování ukázala, že dodává kvalitní výsledky pro zadané instance. Celý svůj postup experimentace jsem zachytil pomocí grafů a tabulek\fnote{průběžné výsledky jsem transparentně přiložil do složky {\bf calculated-sim}}.
 
 
 \bye
