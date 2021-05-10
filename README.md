@@ -1,5 +1,8 @@
-KOP - Úkol 5
-============
+Simulated annealing homework
+============================
+Tento repozitář obsahuje domácí úkol z FIT ČVUT týkající se kombinatorické optimalizace.
+Pro více informací si můžete přečíst [report](https://github.com/Smidra/KOP-ukol-5/blob/991edc622b694989d8c55758dd5c9cbc882e069c/matlab/report.pdf)
+
 ## TODO pro úkol 5
 - ~~GitHub repo~~
 - ~~Pochop o co jde v zadání~~
